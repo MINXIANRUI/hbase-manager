@@ -112,11 +112,30 @@
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <h5 class="panel-title">
+                                        <a data-toggle="collapse" data-parent="#version" href="#v208">v2.0.8</a><code
+                                            class="pull-right">2021.02.06</code>
+                                    </h5>
+                                </div>
+                                <div id="v208" class="panel-collapse collapse in">
+                                    <div class="panel-body">
+                                        <ol>
+                                            <li>hbase-client依赖替换为hbase-shade-client</li>
+                                            <li>支持hbase2.x的编译打包，hbase1.x 对应hbase1.4.3，hbase2.x对应hbase2.1.0</li>
+                                            <li>完善编译脚本以及系统的启动脚本</li>
+                                            <li>新增为用户分配表的功能</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h5 class="panel-title">
                                         <a data-toggle="collapse" data-parent="#version" href="#v207">v2.0.7</a><code
                                             class="pull-right">2021.01.17</code>
                                     </h5>
                                 </div>
-                                <div id="v207" class="panel-collapse collapse in">
+                                <div id="v207" class="panel-collapse collapse">
                                     <div class="panel-body">
                                         <ol>
                                             <li>HBase读写请求量图表展示</li>
