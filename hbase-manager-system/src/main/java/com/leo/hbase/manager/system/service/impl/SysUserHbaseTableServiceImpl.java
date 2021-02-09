@@ -100,12 +100,16 @@ public class SysUserHbaseTableServiceImpl implements ISysUserHbaseTableService {
 
     @Override
     @Transactional(rollbackFor = {HBaseOperationsException.class})
-    public int authUserTable(Long userId, List<SysUserHbaseTable> sysUserHbaseTableList) {
+    public int authUserTable(Long userId, String clusterAlias, List<SysUserHbaseTable> sysUserHbaseTableList) {
+        SysUserHbaseTable sysUserHbaseTable = new SysUserHbaseTable();
+        sysUserHbaseTable.setUserId(userId);
+        sysUserHbaseTable.setClusterAlias(clusterAlias);
+
         if (sysUserHbaseTableList == null || sysUserHbaseTableList.isEmpty()) {
-            sysUserHbaseTableMapper.deleteSysUserHbaseTableById(userId);
+            sysUserHbaseTableMapper.deleteSysUserHbaseTable(sysUserHbaseTable);
             return 1;
         }
-        sysUserHbaseTableMapper.deleteSysUserHbaseTableById(userId);
+        sysUserHbaseTableMapper.deleteSysUserHbaseTable(sysUserHbaseTable);
         return sysUserHbaseTableMapper.batchUserTable(sysUserHbaseTableList);
     }
 }

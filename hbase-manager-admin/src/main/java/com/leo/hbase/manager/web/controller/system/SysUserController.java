@@ -285,7 +285,7 @@ public class SysUserController extends SysHbaseBaseController {
     @GetMapping("/userTableTreeData")
     @ResponseBody
     public List<StrZtree> roleMenuTreeData(Long userId) {
-        List<TableDesc> tableDescList = hBaseAdminService.listAllTableDesc(clusterCodeOfCurrentSession(),false);
+        List<TableDesc> tableDescList = hBaseAdminService.listAllTableDesc(clusterCodeOfCurrentSession(), false);
         return userService.userTableTreeData(tableDescList, userId, clusterCodeOfCurrentSession());
     }
 
@@ -301,7 +301,7 @@ public class SysUserController extends SysHbaseBaseController {
             throw new HBaseOperationsException("请传入有效的用户ID");
         }
         if (StringUtils.isBlank(tables)) {
-            return toAjax(userHbaseTableService.authUserTable(userId, null));
+            return toAjax(userHbaseTableService.authUserTable(userId, clusterCodeOfCurrentSession(), null));
         }
 
         final List<String> tableNameList = Arrays.stream(tables.split(",")).filter(table -> table.contains(":"))
@@ -318,6 +318,6 @@ public class SysUserController extends SysHbaseBaseController {
             return sysUserHbaseTable;
         }).collect(Collectors.toList());
 
-        return toAjax(userHbaseTableService.authUserTable(userId, sysUserHbaseTableList));
+        return toAjax(userHbaseTableService.authUserTable(userId, clusterCodeOfCurrentSession(), sysUserHbaseTableList));
     }
 }

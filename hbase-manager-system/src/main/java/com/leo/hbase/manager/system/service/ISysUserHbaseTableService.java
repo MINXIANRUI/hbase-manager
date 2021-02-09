@@ -81,8 +81,9 @@ public interface ISysUserHbaseTableService {
     /**
      * 设置用户和HBase表的关联信息
      * @param userId 操作对应用户的ID
+     * @param clusterAlias 集群ID
      * @param sysUserHbaseTableList 用户和HBase的关联信息列表
      * @return 是否设置成功
      */
-    public int authUserTable(Long userId, List<SysUserHbaseTable> sysUserHbaseTableList);
+    public int authUserTable(Long userId, String clusterAlias, List<SysUserHbaseTable> sysUserHbaseTableList);
 }
