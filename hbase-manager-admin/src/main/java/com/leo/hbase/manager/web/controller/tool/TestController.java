@@ -5,7 +5,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.leo.hbase.manager.web.hds.HBaseClusterIdentifier;
 import com.leo.hbase.manager.web.service.IMultiHBaseAdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

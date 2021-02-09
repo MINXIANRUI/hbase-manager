@@ -21,7 +21,7 @@ import com.leo.hbase.manager.common.utils.security.StrEnDeUtils;
 import com.leo.hbase.manager.framework.util.ShiroUtils;
 import com.leo.hbase.manager.system.domain.SysUserHbaseTable;
 import com.leo.hbase.manager.system.mapper.SysUserHbaseTableMapper;
-import com.leo.hbase.manager.web.hds.HBaseClusterDSHolder;
+import com.leo.hbase.manager.web.hds.HBaseClusterDSConfig;
 import com.leo.hbase.manager.web.service.IMultiHBaseAdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,6 +37,9 @@ import java.util.stream.Collectors;
 @Service
 public class MultiHBaseAdminServiceImpl implements IMultiHBaseAdminService {
     @Autowired
+    HBaseClusterDSConfig hBaseClusterDSConfig;
+
+    @Autowired
     private SysUserHbaseTableMapper userHbaseTableMapper;
 
     @Override
@@ -47,14 +50,15 @@ public class MultiHBaseAdminServiceImpl implements IMultiHBaseAdminService {
                 throw new BusinessException("已配置过滤该命名空间的前缀");
             }
         }
-        HBaseAdminTemplate hBaseTemplate = HBaseClusterDSHolder.instance().getHBaseAdminTemplate(clusterCode);
+
+        HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         return hBaseTemplate.getNamespaceDesc(namespaceName);
     }
 
     @Override
     public List<NamespaceDesc> listAllNamespaceDesc(String clusterCode) {
         final String filterNamespacePrefix = HBaseConfigUtils.getFilterNamespacePrefix(clusterCode);
-        HBaseAdminTemplate hBaseTemplate = HBaseClusterDSHolder.instance().getHBaseAdminTemplate(clusterCode);
+        HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         final List<NamespaceDesc> namespaceDescList = hBaseTemplate.listNamespaceDesc();
         if (StringUtils.isNotBlank(filterNamespacePrefix)) {
             return namespaceDescList.stream().filter(namespaceDesc -> !namespaceDesc.getNamespaceName().startsWith(filterNamespacePrefix)).collect(Collectors.toList());
@@ -65,7 +69,7 @@ public class MultiHBaseAdminServiceImpl implements IMultiHBaseAdminService {
     @Override
     public List<String> listAllNamespaceName(String clusterCode) {
         final String filterNamespacePrefix = HBaseConfigUtils.getFilterNamespacePrefix(clusterCode);
-        HBaseAdminTemplate hBaseTemplate = HBaseClusterDSHolder.instance().getHBaseAdminTemplate(clusterCode);
+        HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         final List<String> namespaces = hBaseTemplate.listNamespaceNames();
 
         if (StringUtils.isNotBlank(filterNamespacePrefix)) {
@@ -82,19 +86,19 @@ public class MultiHBaseAdminServiceImpl implements IMultiHBaseAdminService {
                 throw new BusinessException("已配置过滤该命名空间的前缀");
             }
         }
-        HBaseAdminTemplate hBaseTemplate = HBaseClusterDSHolder.instance().getHBaseAdminTemplate(clusterCode);
+        HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         return hBaseTemplate.listTableNamesByNamespace(namespaceName);
     }
 
     @Override
     public boolean createNamespace(String clusterCode, NamespaceDesc namespace) {
-        HBaseAdminTemplate hBaseTemplate = HBaseClusterDSHolder.instance().getHBaseAdminTemplate(clusterCode);
+        HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         return hBaseTemplate.createNamespace(namespace);
     }
 
     @Override
     public boolean deleteNamespace(String clusterCode, String namespace) {
-        HBaseAdminTemplate hBaseTemplate = HBaseClusterDSHolder.instance().getHBaseAdminTemplate(clusterCode);
+        HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         return hBaseTemplate.deleteNamespace(namespace);
     }
 
@@ -103,7 +107,7 @@ public class MultiHBaseAdminServiceImpl implements IMultiHBaseAdminService {
         final String filterNamespacePrefix = HBaseConfigUtils.getFilterNamespacePrefix(clusterCode);
         final String filterTableNamePrefix = HBaseConfigUtils.getFilterTableNamePrefix(clusterCode);
 
-        HBaseAdminTemplate hBaseTemplate = HBaseClusterDSHolder.instance().getHBaseAdminTemplate(clusterCode);
+        HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         List<String> tableNames = hBaseTemplate.listTableNames();
 
         if (checkAuth) {
@@ -148,7 +152,7 @@ public class MultiHBaseAdminServiceImpl implements IMultiHBaseAdminService {
         final String filterNamespacePrefix = HBaseConfigUtils.getFilterNamespacePrefix(clusterCode);
         final String filterTableNamePrefix = HBaseConfigUtils.getFilterTableNamePrefix(clusterCode);
 
-        HBaseAdminTemplate hBaseTemplate = HBaseClusterDSHolder.instance().getHBaseAdminTemplate(clusterCode);
+        HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         List<TableDesc> tableDescList = hBaseTemplate.listTableDesc();
 
         if (checkAuth) {
@@ -185,7 +189,7 @@ public class MultiHBaseAdminServiceImpl implements IMultiHBaseAdminService {
 
     @Override
     public List<SnapshotDesc> listAllSnapshotDesc(String clusterCode) {
-        HBaseAdminTemplate hBaseTemplate = HBaseClusterDSHolder.instance().getHBaseAdminTemplate(clusterCode);
+        HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         List<SnapshotDesc> snapshotDescList = hBaseTemplate.listSnapshots();
 
         Long userId = ShiroUtils.getUserId();
@@ -204,7 +208,7 @@ public class MultiHBaseAdminServiceImpl implements IMultiHBaseAdminService {
 
     @Override
     public boolean createTable(String clusterCode, TableDesc tableDesc) {
-        HBaseAdminTemplate hBaseTemplate = HBaseClusterDSHolder.instance().getHBaseAdminTemplate(clusterCode);
+        HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         boolean res = hBaseTemplate.createTable(tableDesc);
         addUserTableRelation(tableDesc, clusterCode);
         return res;
@@ -212,7 +216,7 @@ public class MultiHBaseAdminServiceImpl implements IMultiHBaseAdminService {
 
     @Override
     public boolean createTable(String clusterCode, TableDesc tableDesc, String startKey, String endKey, int numRegions, boolean isAsync) {
-        HBaseAdminTemplate hBaseTemplate = HBaseClusterDSHolder.instance().getHBaseAdminTemplate(clusterCode);
+        HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         boolean res = hBaseTemplate.createTable(tableDesc, startKey, endKey, numRegions, isAsync);
         addUserTableRelation(tableDesc, clusterCode);
         return res;
@@ -220,7 +224,7 @@ public class MultiHBaseAdminServiceImpl implements IMultiHBaseAdminService {
 
     @Override
     public boolean createTable(String clusterCode, TableDesc tableDesc, String[] splitKeys, boolean isAsync) {
-        HBaseAdminTemplate hBaseTemplate = HBaseClusterDSHolder.instance().getHBaseAdminTemplate(clusterCode);
+        HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         boolean res = hBaseTemplate.createTable(tableDesc, splitKeys, isAsync);
         addUserTableRelation(tableDesc, clusterCode);
         return res;
@@ -228,49 +232,49 @@ public class MultiHBaseAdminServiceImpl implements IMultiHBaseAdminService {
 
     @Override
     public boolean createSnapshot(String clusterCode, SnapshotDesc snapshotDesc) {
-        HBaseAdminTemplate hBaseTemplate = HBaseClusterDSHolder.instance().getHBaseAdminTemplate(clusterCode);
+        HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         return hBaseTemplate.snapshot(snapshotDesc);
     }
 
     @Override
     public boolean removeSnapshot(String clusterCode, String snapshotName) {
-        HBaseAdminTemplate hBaseTemplate = HBaseClusterDSHolder.instance().getHBaseAdminTemplate(clusterCode);
+        HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         return hBaseTemplate.deleteSnapshot(snapshotName);
     }
 
     @Override
     public boolean createTable(String clusterCode, TableDesc tableDesc, SplitGoEnum splitGoEnum, int numRegions, boolean isAsync) {
-        HBaseAdminTemplate hBaseTemplate = HBaseClusterDSHolder.instance().getHBaseAdminTemplate(clusterCode);
+        HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         return hBaseTemplate.createTable(tableDesc, splitGoEnum, numRegions, isAsync);
     }
 
     @Override
     public boolean enableTable(String clusterCode, String tableName) {
-        HBaseAdminTemplate hBaseTemplate = HBaseClusterDSHolder.instance().getHBaseAdminTemplate(clusterCode);
+        HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         return hBaseTemplate.enableTable(tableName, true);
     }
 
     @Override
     public boolean disableTable(String clusterCode, String tableName) {
-        HBaseAdminTemplate hBaseTemplate = HBaseClusterDSHolder.instance().getHBaseAdminTemplate(clusterCode);
+        HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         return hBaseTemplate.disableTable(tableName, true);
     }
 
     @Override
     public boolean isTableDisabled(String clusterCode, String tableName) {
-        HBaseAdminTemplate hBaseTemplate = HBaseClusterDSHolder.instance().getHBaseAdminTemplate(clusterCode);
+        HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         return hBaseTemplate.isTableDisabled(tableName);
     }
 
     @Override
     public boolean tableIsExists(String clusterCode, String tableName) {
-        HBaseAdminTemplate hBaseTemplate = HBaseClusterDSHolder.instance().getHBaseAdminTemplate(clusterCode);
+        HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         return hBaseTemplate.tableExists(tableName);
     }
 
     @Override
     public boolean deleteTable(String clusterCode, String tableName) {
-        HBaseAdminTemplate hBaseTemplate = HBaseClusterDSHolder.instance().getHBaseAdminTemplate(clusterCode);
+        HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
 
         boolean res = hBaseTemplate.deleteTable(tableName);
         deleteUserTableRelation(tableName, clusterCode);
@@ -279,55 +283,55 @@ public class MultiHBaseAdminServiceImpl implements IMultiHBaseAdminService {
 
     @Override
     public boolean truncatePreserve(String clusterCode, String tableName) {
-        HBaseAdminTemplate hBaseTemplate = HBaseClusterDSHolder.instance().getHBaseAdminTemplate(clusterCode);
+        HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         return hBaseTemplate.truncateTable(tableName, true);
     }
 
     @Override
     public TableDesc getTableDesc(String clusterCode, String tableName) {
-        HBaseAdminTemplate hBaseTemplate = HBaseClusterDSHolder.instance().getHBaseAdminTemplate(clusterCode);
+        HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         return hBaseTemplate.getTableDesc(tableName);
     }
 
     @Override
     public List<FamilyDesc> getFamilyDesc(String clusterCode, String tableName) {
-        HBaseAdminTemplate hBaseTemplate = HBaseClusterDSHolder.instance().getHBaseAdminTemplate(clusterCode);
+        HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         return hBaseTemplate.listFamilyDesc(tableName);
     }
 
     @Override
     public boolean addFamily(String clusterCode, String tableName, FamilyDesc familyDesc) {
-        HBaseAdminTemplate hBaseTemplate = HBaseClusterDSHolder.instance().getHBaseAdminTemplate(clusterCode);
+        HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         return hBaseTemplate.addFamily(tableName, familyDesc);
     }
 
     @Override
     public boolean deleteFamily(String clusterCode, String tableName, String familyName) {
-        HBaseAdminTemplate hBaseTemplate = HBaseClusterDSHolder.instance().getHBaseAdminTemplate(clusterCode);
+        HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         return hBaseTemplate.deleteFamily(tableName, familyName);
     }
 
     @Override
     public boolean modifyFamily(String clusterCode, String tableName, FamilyDesc familyDesc) {
-        HBaseAdminTemplate hBaseTemplate = HBaseClusterDSHolder.instance().getHBaseAdminTemplate(clusterCode);
+        HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         return hBaseTemplate.modifyFamily(tableName, familyDesc);
     }
 
     @Override
     public boolean enableReplication(String clusterCode, String tableName, List<String> families) {
-        HBaseAdminTemplate hBaseTemplate = HBaseClusterDSHolder.instance().getHBaseAdminTemplate(clusterCode);
+        HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         return hBaseTemplate.enableReplicationScope(tableName, families);
     }
 
     @Override
     public boolean disableReplication(String clusterCode, String tableName, List<String> families) {
-        HBaseAdminTemplate hBaseTemplate = HBaseClusterDSHolder.instance().getHBaseAdminTemplate(clusterCode);
+        HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         return hBaseTemplate.disableReplicationScope(tableName, families);
     }
 
     @Override
     public boolean modifyTable(String clusterCode, TableDesc tableDesc) {
-        HBaseAdminTemplate hBaseTemplate = HBaseClusterDSHolder.instance().getHBaseAdminTemplate(clusterCode);
+        HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         tableDesc.addProp(HBasePropertyConstants.LAST_UPDATE_BY, ShiroUtils.getLoginName());
         tableDesc.addProp(HBasePropertyConstants.LAST_UPDATE_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
         return hBaseTemplate.modifyTableProps(tableDesc);
@@ -335,26 +339,26 @@ public class MultiHBaseAdminServiceImpl implements IMultiHBaseAdminService {
 
     @Override
     public int totalHRegionServerNum(String clusterCode) {
-        HBaseAdminTemplate hBaseTemplate = HBaseClusterDSHolder.instance().getHBaseAdminTemplate(clusterCode);
+        HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
 
         return 5;
     }
 
     @Override
     public int totalNamespaceNum(String clusterCode) {
-        HBaseAdminTemplate hBaseTemplate = HBaseClusterDSHolder.instance().getHBaseAdminTemplate(clusterCode);
+        HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         return hBaseTemplate.listNamespaceNames().size();
     }
 
     @Override
     public int totalTableNum(String clusterCode) {
-        HBaseAdminTemplate hBaseTemplate = HBaseClusterDSHolder.instance().getHBaseAdminTemplate(clusterCode);
+        HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         return hBaseTemplate.listTableNames().size();
     }
 
     @Override
     public int totalSnapshotNum(String clusterCode) {
-        HBaseAdminTemplate hBaseTemplate = HBaseClusterDSHolder.instance().getHBaseAdminTemplate(clusterCode);
+        HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         final List<SnapshotDesc> snapshots = hBaseTemplate.listSnapshots();
         if (snapshots == null || snapshots.isEmpty()) {
             return 0;
@@ -365,13 +369,13 @@ public class MultiHBaseAdminServiceImpl implements IMultiHBaseAdminService {
 
     @Override
     public Summary refreshSummary(String clusterCode) {
-        HBaseAdminTemplate hBaseTemplate = HBaseClusterDSHolder.instance().getHBaseAdminTemplate(clusterCode);
+        HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         return hBaseTemplate.refreshSummary();
     }
 
     @Override
     public List<Record> refreshRecords(String clusterCode, Mode currentMode, List<RecordFilter> filters, Field currentSortField, boolean ascendingSort) {
-        HBaseAdminTemplate hBaseTemplate = HBaseClusterDSHolder.instance().getHBaseAdminTemplate(clusterCode);
+        HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         return hBaseTemplate.refreshRecords(currentMode, filters, currentSortField, ascendingSort);
     }
 

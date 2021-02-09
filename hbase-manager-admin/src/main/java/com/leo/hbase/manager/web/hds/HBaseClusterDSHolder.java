@@ -20,6 +20,7 @@ import java.util.Properties;
  *
  * @author leojie 2020/9/17 10:34 下午
  */
+@Deprecated
 public class HBaseClusterDSHolder {
     private static final Logger LOG = LoggerFactory.getLogger(HBaseClusterDSHolder.class);
 
