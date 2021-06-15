@@ -8,15 +8,14 @@ import org.apache.ibatis.annotations.Param;
 
 /**
  * 用户和HBase的关联Mapper接口
- * 
+ *
  * @author leojie
  * @date 2021-02-06
  */
-public interface SysUserHbaseTableMapper 
-{
+public interface SysUserHbaseTableMapper {
     /**
      * 查询用户和HBase的关联
-     * 
+     *
      * @param userId 用户和HBase的关联ID
      * @return 用户和HBase的关联
      */
@@ -24,7 +23,7 @@ public interface SysUserHbaseTableMapper
 
     /**
      * 查询用户和HBase的关联列表
-     * 
+     *
      * @param sysUserHbaseTable 用户和HBase的关联
      * @return 用户和HBase的关联集合
      */
@@ -33,7 +32,7 @@ public interface SysUserHbaseTableMapper
     /**
      * 查询用户和HBase的关联列表
      *
-     * @param userId 用户ID
+     * @param userId       用户ID
      * @param clusterAlias 集群ID
      * @return 用户和HBase的关联集合
      */
@@ -42,7 +41,7 @@ public interface SysUserHbaseTableMapper
 
     /**
      * 新增用户和HBase的关联
-     * 
+     *
      * @param sysUserHbaseTable 用户和HBase的关联
      * @return 结果
      */
@@ -50,7 +49,7 @@ public interface SysUserHbaseTableMapper
 
     /**
      * 修改用户和HBase的关联
-     * 
+     *
      * @param sysUserHbaseTable 用户和HBase的关联
      * @return 结果
      */
@@ -58,11 +57,18 @@ public interface SysUserHbaseTableMapper
 
     /**
      * 删除用户和HBase的关联
-     * 
+     *
      * @param userId 用户和HBase的关联ID
      * @return 结果
      */
     public int deleteSysUserHbaseTableById(Long userId);
+
+    /**
+     * 根据表名ID删除用户和HBase的关联
+     * @param sysUserHbaseTable 用户和HBase的关联ID
+     * @return 结果
+     */
+    public int deleteSysUserHbaseTableByTableId(SysUserHbaseTable sysUserHbaseTable);
 
     /**
      * 删除用户和HBase的关联
@@ -74,7 +80,7 @@ public interface SysUserHbaseTableMapper
 
     /**
      * 批量删除用户和HBase的关联
-     * 
+     *
      * @param userIds 需要删除的数据ID
      * @return 结果
      */

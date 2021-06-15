@@ -64,7 +64,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </update>
 
 
-
     <delete id="deleteSysUserHbaseTable" parameterType="SysUserHbaseTable">
         delete from sys_user_hbase_table
         <where>
@@ -76,6 +75,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <delete id="deleteSysUserHbaseTableById" parameterType="Long">
         delete from sys_user_hbase_table where user_id = #{userId}
+    </delete>
+
+    <delete id="deleteSysUserHbaseTableByTableId" parameterType="SysUserHbaseTable">
+        delete from sys_user_hbase_table where cluster_alias = #{clusterAlias} and table_id = #{tableId}
     </delete>
 
     <delete id="deleteSysUserHbaseTableByIds" parameterType="String">

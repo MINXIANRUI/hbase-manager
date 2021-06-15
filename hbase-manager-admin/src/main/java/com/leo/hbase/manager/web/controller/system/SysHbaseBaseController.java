@@ -45,6 +45,10 @@ public class SysHbaseBaseController extends BaseController {
 
     private static final Logger LOG = LoggerFactory.getLogger(SysHbaseBaseController.class);
 
+    public String getTableIdByName(String tableName) {
+        return StrEnDeUtils.encrypt(tableName);
+    }
+
     public String parseTableNameFromTableId(String tableId) {
         final String tableName = StrEnDeUtils.decrypt(tableId);
         if (StringUtils.isBlank(tableName)) {

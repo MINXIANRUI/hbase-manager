@@ -33,7 +33,7 @@
         <poi.version>3.17</poi.version>
         <velocity.version>1.7</velocity.version>
         <!-- hbase-sdk相关依赖 -->
-        <hbase.sdk.core.version>2.0.8</hbase.sdk.core.version>
+        <hbase.sdk.core.version>2.0.9</hbase.sdk.core.version>
     </properties>
 
     <licenses>

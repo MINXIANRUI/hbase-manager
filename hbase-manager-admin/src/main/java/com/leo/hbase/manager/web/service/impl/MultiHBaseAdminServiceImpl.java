@@ -209,25 +209,20 @@ public class MultiHBaseAdminServiceImpl implements IMultiHBaseAdminService {
     @Override
     public boolean createTable(String clusterCode, TableDesc tableDesc) {
         HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
-        boolean res = hBaseTemplate.createTable(tableDesc);
-        addUserTableRelation(tableDesc, clusterCode);
-        return res;
+        return hBaseTemplate.createTable(tableDesc);
     }
 
     @Override
     public boolean createTable(String clusterCode, TableDesc tableDesc, String startKey, String endKey, int numRegions, boolean isAsync) {
         HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
-        boolean res = hBaseTemplate.createTable(tableDesc, startKey, endKey, numRegions, isAsync);
-        addUserTableRelation(tableDesc, clusterCode);
-        return res;
+        return hBaseTemplate.createTable(tableDesc, startKey, endKey, numRegions, isAsync);
+
     }
 
     @Override
     public boolean createTable(String clusterCode, TableDesc tableDesc, String[] splitKeys, boolean isAsync) {
         HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
-        boolean res = hBaseTemplate.createTable(tableDesc, splitKeys, isAsync);
-        addUserTableRelation(tableDesc, clusterCode);
-        return res;
+        return hBaseTemplate.createTable(tableDesc, splitKeys, isAsync);
     }
 
     @Override
@@ -275,10 +270,7 @@ public class MultiHBaseAdminServiceImpl implements IMultiHBaseAdminService {
     @Override
     public boolean deleteTable(String clusterCode, String tableName) {
         HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
-
-        boolean res = hBaseTemplate.deleteTable(tableName);
-        deleteUserTableRelation(tableName, clusterCode);
-        return res;
+        return hBaseTemplate.deleteTable(tableName);
     }
 
     @Override
@@ -379,17 +371,6 @@ public class MultiHBaseAdminServiceImpl implements IMultiHBaseAdminService {
         return hBaseTemplate.refreshRecords(currentMode, filters, currentSortField, ascendingSort);
     }
 
-
-    @Transactional(rollbackFor = HBaseOperationsException.class)
-    public void addUserTableRelation(TableDesc tableDesc, String clusterCode) {
-        SysUserHbaseTable sysUserHbaseTable = new SysUserHbaseTable();
-        sysUserHbaseTable.setUserId(ShiroUtils.getUserId());
-        sysUserHbaseTable.setTableName(tableDesc.getFullTableName());
-        sysUserHbaseTable.setTableId(StrEnDeUtils.encrypt(tableDesc.getFullTableName()));
-        sysUserHbaseTable.setClusterAlias(clusterCode);
-        sysUserHbaseTable.setNamespaceName(tableDesc.getNamespaceName());
-        userHbaseTableMapper.insertSysUserHbaseTable(sysUserHbaseTable);
-    }
 
     @Transactional(rollbackFor = HBaseOperationsException.class)
     public void deleteUserTableRelation(String tableName, String clusterCode) {

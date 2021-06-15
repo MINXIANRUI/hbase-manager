@@ -6,6 +6,7 @@ import com.github.CCweixiao.model.TableDesc;
 import com.github.CCweixiao.util.SplitGoEnum;
 import com.github.CCweixiao.util.StrUtil;
 import com.leo.hbase.manager.common.annotation.Log;
+import com.leo.hbase.manager.common.constant.Constants;
 import com.leo.hbase.manager.common.constant.HBaseManagerConstants;
 import com.leo.hbase.manager.common.core.domain.AjaxResult;
 import com.leo.hbase.manager.common.core.page.TableDataInfo;
@@ -15,9 +16,11 @@ import com.leo.hbase.manager.common.utils.poi.ExcelUtil;
 import com.leo.hbase.manager.common.utils.security.StrEnDeUtils;
 import com.leo.hbase.manager.framework.util.ShiroUtils;
 import com.leo.hbase.manager.system.domain.SysHbaseTag;
+import com.leo.hbase.manager.system.domain.SysUserHbaseTable;
 import com.leo.hbase.manager.system.dto.NamespaceDescDto;
 import com.leo.hbase.manager.system.dto.TableDescDto;
 import com.leo.hbase.manager.system.service.ISysUserHbaseTableService;
+import com.leo.hbase.manager.system.service.ISysUserService;
 import com.leo.hbase.manager.web.controller.query.QueryHBaseTableForm;
 import com.leo.hbase.manager.web.service.IMultiHBaseAdminService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -46,6 +49,13 @@ public class SysHbaseTableController extends SysHbaseBaseController {
 
     @Autowired
     private IMultiHBaseAdminService multiHBaseAdminService;
+
+    @Autowired
+    private ISysUserHbaseTableService userHbaseTableService;
+
+    @Autowired
+    private ISysUserService userService;
+
 
     @RequiresPermissions("system:table:view")
     @GetMapping()
@@ -146,7 +156,7 @@ public class SysHbaseTableController extends SysHbaseBaseController {
         String clusterCode = clusterCodeOfCurrentSession();
         final String tableName = tableDescDto.getTableName();
         final String fullTableName = HMHBaseConstant.getFullTableName(tableDescDto.getNamespaceId(), tableName);
-
+        final String tableId = getTableIdByName(fullTableName);
         if (multiHBaseAdminService.tableIsExists(clusterCode, fullTableName)) {
             return error("HBase表[" + fullTableName + "]已经存在！");
         }
@@ -194,6 +204,24 @@ public class SysHbaseTableController extends SysHbaseBaseController {
         if (!createTableRes) {
             return error("系统异常，HBase表[" + fullTableName + "]创建失败！");
         }
+        SysUserHbaseTable sysUserHbaseTable = new SysUserHbaseTable();
+        sysUserHbaseTable.setClusterAlias(clusterCode);
+        sysUserHbaseTable.setTableId(tableId);
+        sysUserHbaseTable.setTableName(fullTableName);
+        sysUserHbaseTable.setNamespaceName(HMHBaseConstant.getNamespaceName(fullTableName));
+        sysUserHbaseTable.setUserId(ShiroUtils.getUserId());
+        userHbaseTableService.insertSysUserHbaseTable(sysUserHbaseTable);
+
+        if (!"admin".equals(ShiroUtils.getLoginName())) {
+            SysUserHbaseTable sysAdminHbaseTable = new SysUserHbaseTable();
+            sysAdminHbaseTable.setClusterAlias(clusterCode);
+            sysAdminHbaseTable.setTableId(tableId);
+            sysAdminHbaseTable.setTableName(fullTableName);
+            sysAdminHbaseTable.setNamespaceName(HMHBaseConstant.getNamespaceName(fullTableName));
+            sysAdminHbaseTable.setUserId(userService.selectUserByLoginName("admin").getUserId());
+            userHbaseTableService.insertSysUserHbaseTable(sysAdminHbaseTable);
+        }
+
         return success("HBase表[" + fullTableName + "]创建成功！");
     }
 
@@ -286,6 +314,12 @@ public class SysHbaseTableController extends SysHbaseBaseController {
         if (!deleteTableDisabledStatusRes) {
             return error("系统异常，表状态修改失败！");
         }
+        SysUserHbaseTable sysUserHbaseTable = new SysUserHbaseTable();
+        sysUserHbaseTable.setClusterAlias(clusterCode);
+        sysUserHbaseTable.setTableId(tableId);
+
+        userHbaseTableService.deleteSysUserHbaseTableByTableId(sysUserHbaseTable);
+
         return success();
     }
 

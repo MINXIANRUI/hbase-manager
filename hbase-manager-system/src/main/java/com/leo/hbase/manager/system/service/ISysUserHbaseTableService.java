@@ -79,6 +79,13 @@ public interface ISysUserHbaseTableService {
     public int deleteSysUserHbaseTable(SysUserHbaseTable sysUserHbaseTable);
 
     /**
+     *  根据表名ID删除用户和HBase的关联
+     * @param sysUserHbaseTable 用户和HBase的关联
+     * @return 结果
+     */
+    public int deleteSysUserHbaseTableByTableId(SysUserHbaseTable sysUserHbaseTable);
+
+    /**
      * 设置用户和HBase表的关联信息
      * @param userId 操作对应用户的ID
      * @param clusterAlias 集群ID
