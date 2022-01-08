@@ -12,14 +12,19 @@
                 <div class="select-list" id="query-element">
                     <ul>
                         <li>
-                            筛选表名：<select id="tableName" name="tableName" class="type form-control m-b">
-                        </select>
+                            筛选表名：<select id="tableName" name="tableName" class="type form-control m-b"></select>
                         </li>
 
                         <li>
                             筛选列簇：<select id="familyName" name="familyName" class="router form-control m-b">
                         </select>
                         </li>
+                        <!--<li>
+                            筛选列簇： <select name="familyName" class="form-control m-b">
+                                <option th:each="familyName:${familyNameList}" th:value="${familyName}"
+                                        th:text="${familyName}"></option>
+                            </select>
+                        </li>-->
                         <li>
                             <label>row key：</label>
                             <input type="text" name="rowKey"/>
@@ -76,10 +81,12 @@
         required: true,
         data: data
     });
+    var currentTableId = [[${tableId}]]
     var detailFlag = [[${@permission.hasPermi('hbase:data:detail')}]];
     var editFlag = [[${@permission.hasPermi('hbase:data:edit')}]];
     var removeFlag = [[${@permission.hasPermi('hbase:data:remove')}]];
     var prefix = ctx + "system/data";
+    var tablePrefix = ctx + "system/table";
 
     $(function () {
         var options = {
@@ -109,10 +116,7 @@
                 },
                 {
                     field: 'timestamp',
-                    title: '时间戳',
-                    formatter: function (value, row, index) {
-                        return formatterTimestampToDateStr("yyyy-MM-dd hh:mm:ss", value);
-                    }
+                    title: '时间戳'
                 },
                 {
                     field: 'value',
@@ -143,7 +147,8 @@
     });
 
     function showAddPanel() {
-        $.operate.add();
+        var url = tablePrefix + "/data/" + currentTableId + "/add"
+        $.operate.editWithUrl(url)
     }
 
     function showDetailPanel(queryParams) {

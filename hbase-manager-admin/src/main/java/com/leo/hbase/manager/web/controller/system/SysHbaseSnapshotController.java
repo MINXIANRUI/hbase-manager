@@ -37,7 +37,7 @@ public class SysHbaseSnapshotController extends SysHbaseBaseController {
     @Autowired
     private IMultiHBaseAdminService multiHBaseAdminService;
 
-    @RequiresPermissions("system:snapshot:view")
+    @RequiresPermissions("hbase:snapshot:view")
     @GetMapping()
     public String snapshot(ModelMap mmap) {
         final List<String> allTableNames = multiHBaseAdminService.listAllTableName(clusterCodeOfCurrentSession(),true);
@@ -48,7 +48,7 @@ public class SysHbaseSnapshotController extends SysHbaseBaseController {
     /**
      * 快照列表
      */
-    @RequiresPermissions("system:snapshot:list")
+    @RequiresPermissions("hbase:snapshot:list")
     @PostMapping("/list")
     @ResponseBody
     public TableDataInfo list(SnapshotDescDto snapshotDescDto) {
@@ -81,7 +81,7 @@ public class SysHbaseSnapshotController extends SysHbaseBaseController {
     /**
      * 新增保存HBaseNamespace
      */
-    @RequiresPermissions("system:snapshot:add")
+    @RequiresPermissions("hbase:snapshot:add")
     @Log(title = "HBase表快照", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
@@ -101,7 +101,7 @@ public class SysHbaseSnapshotController extends SysHbaseBaseController {
     /**
      * 删除HBase表快照
      */
-    @RequiresPermissions("system:snapshot:remove")
+    @RequiresPermissions("hbase:snapshot:remove")
     @Log(title = "HBase表快照", businessType = BusinessType.DELETE)
     @PostMapping("/remove")
     @ResponseBody

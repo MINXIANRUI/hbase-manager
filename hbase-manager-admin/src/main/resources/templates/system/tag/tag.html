@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
-    <th:block th:include="include :: header('HBaseTag列表')" />
+    <th:block th:include="include :: header('HBase标签列表')" />
 </head>
 <body class="gray-bg">
      <div class="container-div">
@@ -24,16 +24,16 @@
             </div>
 
             <div class="btn-group-sm" id="toolbar" role="group">
-                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:tag:add">
+                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="hbase:tag:add">
                     <i class="fa fa-plus"></i> 添加
                 </a>
-                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="system:tag:edit">
+                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="hbase:tag:edit">
                     <i class="fa fa-edit"></i> 修改
                 </a>
-                <!--<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="system:tag:remove">
+                <!--<a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="hbase:tag:remove">
                     <i class="fa fa-remove"></i> 删除
                 </a>-->
-                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:tag:export">
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="hbase:tag:export">
                     <i class="fa fa-download"></i> 导出
                 </a>
             </div>
@@ -44,8 +44,8 @@
     </div>
     <th:block th:include="include :: footer" />
     <script th:inline="javascript">
-        var editFlag = [[${@permission.hasPermi('system:tag:edit')}]];
-        var removeFlag = [[${@permission.hasPermi('system:tag:remove')}]];
+        var editFlag = [[${@permission.hasPermi('hbase:tag:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('hbase:tag:remove')}]];
         var prefix = ctx + "system/tag";
 
         $(function() {

@@ -30,18 +30,18 @@
         </div>
 
         <div class="btn-group-sm" id="toolbar" role="group">
-            <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="system:snapshot:add">
+            <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="hbase:snapshot:add">
                 <i class="fa fa-plus"></i> 添加
             </a>
             <!--<a class="btn btn-primary single disabled" onclick="$.operate.edit()"
-               shiro:hasPermission="system:snapshot:edit">
+               shiro:hasPermission="hbase:snapshot:edit">
                 <i class="fa fa-edit"></i> 修改
             </a>-->
             <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()"
-               shiro:hasPermission="system:snapshot:remove">
+               shiro:hasPermission="hbase:snapshot:remove">
                 <i class="fa fa-remove"></i> 删除
             </a>
-            <!--<a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:table:export">
+            <!--<a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="hbase:table:export">
                 <i class="fa fa-download"></i> 导出
             </a>-->
         </div>
@@ -54,9 +54,9 @@
 <th:block th:include="include :: footer"/>
 <th:block th:include="include :: bootstrap-select-js"/>
 <script th:inline="javascript">
-    var detailFlag = [[${@permission.hasPermi('system:snapshot:detail')}]];
-    var editFlag = [[${@permission.hasPermi('system:snapshot:edit')}]];
-    var removeFlag = [[${@permission.hasPermi('system:snapshot:remove')}]];
+    var detailFlag = [[${@permission.hasPermi('hbase:snapshot:detail')}]];
+    var editFlag = [[${@permission.hasPermi('hbase:snapshot:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('hbase:snapshot:remove')}]];
 
     var prefix = ctx + "system/snapshot";
 

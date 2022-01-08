@@ -1,6 +1,8 @@
 package com.leo.hbase.manager.web.controller.system;
 
+import com.alibaba.fastjson.JSON;
 import com.github.CCweixiao.constant.HMHBaseConstant;
+import com.github.CCweixiao.model.ColumnFamilyDesc;
 import com.github.CCweixiao.model.HTableDesc;
 import com.github.CCweixiao.model.NamespaceDesc;
 import com.github.CCweixiao.util.SplitGoEnum;
@@ -8,6 +10,7 @@ import com.github.CCweixiao.util.StrUtil;
 import com.leo.hbase.manager.common.annotation.Log;
 import com.leo.hbase.manager.common.constant.HBaseManagerConstants;
 import com.leo.hbase.manager.common.core.domain.AjaxResult;
+import com.leo.hbase.manager.common.core.domain.CxSelect;
 import com.leo.hbase.manager.common.core.page.TableDataInfo;
 import com.leo.hbase.manager.common.core.text.Convert;
 import com.leo.hbase.manager.common.enums.BusinessType;
@@ -35,6 +38,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.leo.hbase.manager.common.constant.HBasePropertyConstants.HBASE_TABLE_DISABLE_FLAG;
+import static com.leo.hbase.manager.common.constant.HBasePropertyConstants.HBASE_TABLE_ENABLE_FLAG;
+
 /**
  * HBaseController
  *
@@ -56,7 +62,7 @@ public class SysHbaseTableController extends SysHbaseBaseController {
     private ISysUserService userService;
 
 
-    @RequiresPermissions("system:table:view")
+    @RequiresPermissions("hbase:table:view")
     @GetMapping()
     public String table(ModelMap mmap) {
         final List<NamespaceDescDto> namespaceDescList = getAllNamespaces();
@@ -65,8 +71,22 @@ public class SysHbaseTableController extends SysHbaseBaseController {
         return prefix + "/table";
     }
 
+    @GetMapping("/data/{tableId}")
+    public String data(@PathVariable("tableId") String tableId, ModelMap mmap) {
+        final String tableName = parseTableNameFromTableId(tableId);
+        mmap.put("tableFamilyData", JSON.toJSON(getTableSelectData(tableName)));
+        mmap.put("tableId", tableId);
+        return prefix + "/data";
+    }
+    @GetMapping("/data/{tableId}/add")
+    public String addData(@PathVariable("tableId") String tableId, ModelMap mmap) {
+        final String tableName = parseTableNameFromTableId(tableId);
+        mmap.put("tableFamilyData", JSON.toJSON(getTableSelectData(tableName)));
+        return prefix + "/addData";
+    }
 
-    @RequiresPermissions("system:table:detail")
+
+    @RequiresPermissions("hbase:table:detail")
     @GetMapping("/detail/{tableId}")
     public String detail(@PathVariable("tableId") String tableId, ModelMap mmap) {
         final String tableName = parseTableNameFromTableId(tableId);
@@ -78,7 +98,7 @@ public class SysHbaseTableController extends SysHbaseBaseController {
         return prefix + "/detail";
     }
 
-    @RequiresPermissions("system:table:detail")
+    @RequiresPermissions("hbase:table:detail")
     @GetMapping("/family/detail/{tableId}")
     public String familyDetail(@PathVariable("tableId") String tableId, ModelMap mmap) {
         final String tableName = StrEnDeUtils.decrypt(tableId);
@@ -108,7 +128,7 @@ public class SysHbaseTableController extends SysHbaseBaseController {
     /**
      * 查询HBase列表
      */
-    @RequiresPermissions("system:table:list")
+    @RequiresPermissions("hbase:table:list")
     @PostMapping("/list")
     @ResponseBody
     public TableDataInfo list(QueryHBaseTableForm queryHBaseTableForm) {
@@ -120,8 +140,8 @@ public class SysHbaseTableController extends SysHbaseBaseController {
     /**
      * 导出HBase列表
      */
-    @RequiresPermissions("system:table:export")
-    @Log(title = "HBase", businessType = BusinessType.EXPORT)
+    @RequiresPermissions("hbase:table:export")
+    @Log(title = "HBase表信息导出", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     @ResponseBody
     public AjaxResult export(QueryHBaseTableForm queryHBaseTableForm) {
@@ -147,8 +167,8 @@ public class SysHbaseTableController extends SysHbaseBaseController {
     /**
      * 新增保存HBase
      */
-    @RequiresPermissions("system:table:add")
-    @Log(title = "HBase", businessType = BusinessType.INSERT)
+    @RequiresPermissions("hbase:table:add")
+    @Log(title = "HBase表新增", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
     public AjaxResult addSave(@Validated TableDescDto tableDescDto) {
@@ -159,7 +179,7 @@ public class SysHbaseTableController extends SysHbaseBaseController {
         if (multiHBaseAdminService.tableIsExists(clusterCode, fullTableName)) {
             return error("HBase表[" + fullTableName + "]已经存在！");
         }
-
+        tableDescDto.setTableName(fullTableName);
         tableDescDto.setCreateBy(ShiroUtils.getLoginName());
         tableDescDto.setCreateTimestamp(System.currentTimeMillis());
         tableDescDto.setLastUpdateBy(ShiroUtils.getLoginName());
@@ -232,8 +252,6 @@ public class SysHbaseTableController extends SysHbaseBaseController {
         final String tableName = StrEnDeUtils.decrypt(tableId);
 
         String clusterCode = clusterCodeOfCurrentSession();
-        final List<NamespaceDesc> namespaceDescList = multiHBaseAdminService.listAllNamespaceDesc(clusterCode);
-        mmap.put("namespaces", namespaceDescList);
         HTableDesc tableDesc = multiHBaseAdminService.getHTableDesc(clusterCode, tableName);
         TableDescDto tableDescDto = new TableDescDto().convertFor(tableDesc);
         mmap.put("tableDescDto", tableDescDto);
@@ -245,41 +263,39 @@ public class SysHbaseTableController extends SysHbaseBaseController {
     /**
      * 修改保存HBase
      */
-    @RequiresPermissions("system:table:edit")
-    @Log(title = "HBase", businessType = BusinessType.UPDATE)
+    @RequiresPermissions("hbase:table:edit")
+    @Log(title = "HBase表信息修改", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
     public AjaxResult editSave(TableDescDto tableDescDto) {
         String clusterCode = clusterCodeOfCurrentSession();
         String tableName = StrEnDeUtils.decrypt(tableDescDto.getTableId());
         tableDescDto.setTableName(tableName);
-
-        tableDescDto.setCreateBy(ShiroUtils.getLoginName());
-        tableDescDto.setCreateTimestamp(System.currentTimeMillis());
         tableDescDto.setLastUpdateBy(ShiroUtils.getLoginName());
         tableDescDto.setLastUpdateTimestamp(System.currentTimeMillis());
-
-        HTableDesc tableDesc = tableDescDto.convertTo();
-     /*   if (tableDesc.getState()) {
-            multiHBaseAdminService.disableTable(clusterCode, tableName);
-        } else {
+        String currentDisableFlag = tableDescDto.getDisableFlag();
+        if (HBASE_TABLE_ENABLE_FLAG.equals(currentDisableFlag) && multiHBaseAdminService.isTableDisabled(clusterCode, tableName)) {
             multiHBaseAdminService.enableTable(clusterCode, tableName);
-        }*/
-        multiHBaseAdminService.modifyTable(clusterCode, tableDesc);
+        }
+        if (HBASE_TABLE_DISABLE_FLAG.equals(currentDisableFlag) && !multiHBaseAdminService.isTableDisabled(clusterCode, tableName)) {
+            multiHBaseAdminService.disableTable(clusterCode, tableName);
+        }
+        HTableDesc tableDesc = tableDescDto.convertTo();
+        multiHBaseAdminService.modifyTableProps(clusterCode, tableDesc);
         return success();
     }
 
     /**
      * 修改保存HBase表禁用状态
      */
-    @RequiresPermissions("system:table:edit")
-    @Log(title = "HBase", businessType = BusinessType.UPDATE)
+    @RequiresPermissions("hbase:table:edit")
+    @Log(title = "HBase表状态修改", businessType = BusinessType.UPDATE)
     @PostMapping("/changeDisableStatus")
     @ResponseBody
-    public AjaxResult changeDisableStatus(QueryHBaseTableForm queryHBaseTableForm) {
+    public AjaxResult changeDisableStatus(QueryHBaseTableForm form) {
         String clusterCode = clusterCodeOfCurrentSession();
         boolean changeTableDisabledStatusRes = false;
-        String tableName = StrEnDeUtils.decrypt(queryHBaseTableForm.getTableId());
+        String tableName = parseTableNameFromTableId(form.getTableId());
 
         if (multiHBaseAdminService.isTableDisabled(clusterCode, tableName)) {
             changeTableDisabledStatusRes = multiHBaseAdminService.enableTable(clusterCode, tableName);
@@ -297,8 +313,8 @@ public class SysHbaseTableController extends SysHbaseBaseController {
     /**
      * 删除HBase表
      */
-    @RequiresPermissions("system:table:remove")
-    @Log(title = "HBase", businessType = BusinessType.DELETE)
+    @RequiresPermissions("hbase:table:remove")
+    @Log(title = "HBase表删除", businessType = BusinessType.DELETE)
     @PostMapping("/remove")
     @ResponseBody
     public AjaxResult remove(String tableId) {
@@ -326,8 +342,8 @@ public class SysHbaseTableController extends SysHbaseBaseController {
     /**
      * 清空HBase表的数据
      */
-    @RequiresPermissions("system:table:clear")
-    @Log(title = "清空HBase表的数据", businessType = BusinessType.DELETE)
+    @RequiresPermissions("hbase:table:clear")
+    @Log(title = "HBase表数据清空", businessType = BusinessType.DELETE)
     @PostMapping("/truncatePreserveTable")
     @ResponseBody
     public AjaxResult truncatePreserveTable(String tableId) {
@@ -370,5 +386,23 @@ public class SysHbaseTableController extends SysHbaseBaseController {
         return tags;
     }
 
+    private List<CxSelect> getTableSelectData(String tableName) {
+        List<String> families = multiHBaseAdminService.getColumnFamilyDesc(clusterCodeOfCurrentSession(), tableName)
+                .stream().map(ColumnFamilyDesc::getFamilyName).collect(Collectors.toList());
+        List<CxSelect> cxTableInfoList = new ArrayList<>();
+        CxSelect cxSelectTable = new CxSelect();
+        cxSelectTable.setN(tableName);
+        cxSelectTable.setV(tableName);
+        List<CxSelect> tempFamilyList = new ArrayList<>();
+        for (String family : families) {
+            CxSelect cxSelectFamily = new CxSelect();
+            cxSelectFamily.setN(family);
+            cxSelectFamily.setV(family);
+            tempFamilyList.add(cxSelectFamily);
+        }
+        cxSelectTable.setS(tempFamilyList);
+        cxTableInfoList.add(cxSelectTable);
+        return cxTableInfoList;
+    }
 
 }

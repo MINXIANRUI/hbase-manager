@@ -7,6 +7,7 @@ import com.leo.hbase.manager.common.constant.UserConstants;
 import com.leo.hbase.manager.common.core.domain.AjaxResult;
 import com.leo.hbase.manager.common.core.domain.StrZtree;
 import com.leo.hbase.manager.common.core.page.TableDataInfo;
+import com.leo.hbase.manager.common.core.text.Convert;
 import com.leo.hbase.manager.common.enums.BusinessType;
 import com.leo.hbase.manager.common.utils.StringUtils;
 import com.leo.hbase.manager.common.utils.poi.ExcelUtil;
@@ -29,7 +30,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -234,7 +234,9 @@ public class SysUserController extends SysHbaseBaseController {
     @ResponseBody
     public AjaxResult remove(String ids) {
         try {
-            return toAjax(userService.deleteUserByIds(ids));
+            AjaxResult ajaxResult = toAjax(userService.deleteUserByIds(ids));
+            userHbaseTableService.deleteSysUserHbaseTableByUserIds(ids);
+            return ajaxResult;
         } catch (Exception e) {
             return error(e.getMessage());
         }

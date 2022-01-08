@@ -14,5 +14,7 @@ public class HBasePropertyConstants {
     public static final String HBASE_TABLE_PROP_SPLIT = ",";
     public static final String HBASE_TABLE_DEFAULT_REMARK = "暂无表备注";
     public static final String HBASE_TABLE_DEFAULT_CREATED = "admin";
+    public static final String HBASE_TABLE_DISABLE_FLAG = "2";
+    public static final String HBASE_TABLE_ENABLE_FLAG = "0";
 
 }

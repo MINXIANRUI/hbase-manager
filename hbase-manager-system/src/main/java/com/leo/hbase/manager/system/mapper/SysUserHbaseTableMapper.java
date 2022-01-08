@@ -84,7 +84,7 @@ public interface SysUserHbaseTableMapper {
      * @param userIds 需要删除的数据ID
      * @return 结果
      */
-    public int deleteSysUserHbaseTableByIds(String[] userIds);
+    public int deleteSysUserHbaseTableByUserIds(String[] userIds);
 
     /**
      * 批量新增用户和HBase的关联

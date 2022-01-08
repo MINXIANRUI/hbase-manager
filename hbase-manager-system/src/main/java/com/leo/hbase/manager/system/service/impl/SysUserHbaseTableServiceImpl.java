@@ -74,12 +74,12 @@ public class SysUserHbaseTableServiceImpl implements ISysUserHbaseTableService {
     /**
      * 删除用户和HBase的关联对象
      *
-     * @param ids 需要删除的数据ID
+     * @param userIds 用户ID
      * @return 结果
      */
     @Override
-    public int deleteSysUserHbaseTableByIds(String ids) {
-        return sysUserHbaseTableMapper.deleteSysUserHbaseTableByIds(Convert.toStrArray(ids));
+    public int deleteSysUserHbaseTableByUserIds(String userIds) {
+        return sysUserHbaseTableMapper.deleteSysUserHbaseTableByUserIds(Convert.toStrArray(userIds));
     }
 
     /**

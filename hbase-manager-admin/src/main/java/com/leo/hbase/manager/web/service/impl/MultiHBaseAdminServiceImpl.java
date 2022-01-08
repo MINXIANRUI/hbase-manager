@@ -242,19 +242,19 @@ public class MultiHBaseAdminServiceImpl implements IMultiHBaseAdminService {
     @Override
     public boolean createTable(String clusterCode, HTableDesc tableDesc, SplitGoEnum splitGoEnum, int numRegions, boolean isAsync) {
         HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
-        return hBaseTemplate.createTable(tableDesc, splitGoEnum, numRegions, isAsync);
+        return hBaseTemplate.createTable(tableDesc, splitGoEnum, numRegions, isAsync) ;
     }
 
     @Override
     public boolean enableTable(String clusterCode, String tableName) {
         HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
-        return hBaseTemplate.enableTable(tableName, true);
+        return hBaseTemplate.enableTableAsync(tableName);
     }
 
     @Override
     public boolean disableTable(String clusterCode, String tableName) {
         HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
-        return hBaseTemplate.disableTable(tableName, true);
+        return hBaseTemplate.disableTableAsync(tableName);
     }
 
     @Override
@@ -325,11 +325,14 @@ public class MultiHBaseAdminServiceImpl implements IMultiHBaseAdminService {
 
     @Override
     public boolean modifyTable(String clusterCode, HTableDesc tableDesc) {
+        //todo modifyTable
+        return true;
+    }
+
+    @Override
+    public boolean modifyTableProps(String clusterCode, HTableDesc tableDesc) {
         HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
-        Map<String, String> props = new HashMap<>(2);
-        props.put(HBasePropertyConstants.LAST_UPDATE_BY, ShiroUtils.getLoginName());
-        props.put(HBasePropertyConstants.LAST_UPDATE_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
-        return hBaseTemplate.modifyTableProps(tableDesc.getFullTableName(), props, true);
+        return hBaseTemplate.modifyTablePropsAsync(tableDesc.getFullTableName(), tableDesc.getTableProps());
     }
 
     @Override

@@ -48,7 +48,7 @@ public class SysHbaseTableDataController extends SysHbaseBaseController {
     @Autowired
     private IMultiHBaseAdminService multiHBaseAdminService;
 
-    @RequiresPermissions("system:data:view")
+    @RequiresPermissions("hbase:data:view")
     @GetMapping()
     public String data(ModelMap mmap) {
         List<CxSelect> cxTableInfoList = getTableFamilyRelations();
@@ -60,7 +60,7 @@ public class SysHbaseTableDataController extends SysHbaseBaseController {
     /**
      * 查询HBase列表数据
      */
-    @RequiresPermissions("system:data:list")
+    @RequiresPermissions("hbase:data:list")
     @PostMapping("/list")
     @ResponseBody
     public TableDataInfo list(SysHbaseTableData sysHbaseTableData) {
@@ -98,7 +98,7 @@ public class SysHbaseTableDataController extends SysHbaseBaseController {
         return getDataTable(list);
     }
 
-    @RequiresPermissions("system:data:detail")
+    @RequiresPermissions("hbase:data:detail")
     @GetMapping("/detail")
     public String detail(@RequestParam String tableName,
                          @RequestParam String familyName,
@@ -118,8 +118,8 @@ public class SysHbaseTableDataController extends SysHbaseBaseController {
     /**
      * 导出HBase列表数据
      */
-    @RequiresPermissions("system:data:export")
-    @Log(title = "HBase数据", businessType = BusinessType.EXPORT)
+    @RequiresPermissions("hbase:data:export")
+    @Log(title = "HBase数据导出", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     @ResponseBody
     public AjaxResult export(SysHbaseTableData sysHbaseTableData) {
@@ -142,8 +142,8 @@ public class SysHbaseTableDataController extends SysHbaseBaseController {
     /**
      * 新增保存HBase数据
      */
-    @RequiresPermissions("system:data:add")
-    @Log(title = "HBase数据", businessType = BusinessType.INSERT)
+    @RequiresPermissions("hbase:data:add")
+    @Log(title = "HBase数据新增", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
     public AjaxResult addSave(@Validated SysHbaseTableData sysHbaseTableData) {
@@ -177,8 +177,8 @@ public class SysHbaseTableDataController extends SysHbaseBaseController {
     /**
      * 修改保存HBase数据
      */
-    @RequiresPermissions("system:data:edit")
-    @Log(title = "HBase数据", businessType = BusinessType.UPDATE)
+    @RequiresPermissions("hbase:data:edit")
+    @Log(title = "HBase数据更新", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
     public AjaxResult editSave(SysHbaseTableData sysHbaseTableData) {
@@ -194,8 +194,8 @@ public class SysHbaseTableDataController extends SysHbaseBaseController {
     /**
      * 删除HBase数据
      */
-    @RequiresPermissions("system:data:remove")
-    @Log(title = "HBase数据", businessType = BusinessType.DELETE)
+    @RequiresPermissions("hbase:data:remove")
+    @Log(title = "HBase数据删除", businessType = BusinessType.DELETE)
     @PostMapping("/remove")
     @ResponseBody
     public AjaxResult remove(@RequestParam String tableName, @RequestParam String familyName, @RequestParam String rowKey) {

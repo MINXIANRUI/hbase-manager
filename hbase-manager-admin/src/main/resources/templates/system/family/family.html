@@ -34,10 +34,10 @@
         </div>
 
         <div class="btn-group-sm" id="toolbar" role="group">
-            <a class="btn btn-success" onclick="showAddFamily()" shiro:hasPermission="system:family:add">
+            <a class="btn btn-success" onclick="showAddFamily()" shiro:hasPermission="hbase:family:add">
                 <i class="fa fa-plus"></i> 添加
             </a>
-            <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:family:export">
+            <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="hbase:family:export">
                 <i class="fa fa-download"></i> 导出
             </a>
         </div>
@@ -54,8 +54,8 @@
 <script th:inline="javascript">
     var familyReplicationScopeDatas = [[${@dict.getType('sys_hbase_family_replication_scope')}]];
     var familyCompressionTypeDatas = [[${@dict.getType('sys_hbase_family_compression_type')}]];
-    var editFlag = [[${@permission.hasPermi('system:family:edit')}]];
-    var removeFlag = [[${@permission.hasPermi('system:family:remove')}]];
+    var editFlag = [[${@permission.hasPermi('hbase:family:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('hbase:family:remove')}]];
     var prefix = ctx + "system/family";
 
 
@@ -91,8 +91,13 @@
                     title: '最大版本号'
                 },
                 {
+                    field: 'ttl',
+                    title: 'TTL'
+                },
+                {
                     field: 'timeToLive',
-                    title: 'ttl'
+                    title: 'ttl',
+                    visible: false
                 },
                 {
                     field: 'compressionType',
@@ -141,6 +146,7 @@
         var tableId = $('#tableId').val()
         $.operate.add(tableId);
     }
+
 
 </script>
 </body>

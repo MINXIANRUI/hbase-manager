@@ -33,7 +33,7 @@ public class SysHbaseFamilyController extends SysHbaseBaseController {
     @Autowired
     private IMultiHBaseAdminService multiHBaseAdminService;
 
-    @RequiresPermissions("system:family:view")
+    @RequiresPermissions("hbase:family:view")
     @GetMapping()
     public String family() {
         return prefix + "/family";
@@ -42,7 +42,7 @@ public class SysHbaseFamilyController extends SysHbaseBaseController {
     /**
      * 查询HBase Family列表
      */
-    @RequiresPermissions("system:family:list")
+    @RequiresPermissions("hbase:family:list")
     @PostMapping("/list")
     @ResponseBody
     public TableDataInfo list(QueryHBaseTableForm queryHBaseTableForm) {
@@ -55,8 +55,8 @@ public class SysHbaseFamilyController extends SysHbaseBaseController {
     /**
      * 导出HBase Family列表
      */
-    @RequiresPermissions("system:family:export")
-    @Log(title = "HBase Family", businessType = BusinessType.EXPORT)
+    @RequiresPermissions("hbase:family:export")
+    @Log(title = "HBase列簇导出", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     @ResponseBody
     public AjaxResult export(QueryHBaseTableForm queryHBaseTableForm) {
@@ -82,8 +82,8 @@ public class SysHbaseFamilyController extends SysHbaseBaseController {
     /**
      * 新增保存HBase Family
      */
-    @RequiresPermissions("system:family:add")
-    @Log(title = "HBase Family", businessType = BusinessType.INSERT)
+    @RequiresPermissions("hbase:family:add")
+    @Log(title = "HBase列簇新增", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
     public AjaxResult addSave(FamilyDescDto familyDescDto) {
@@ -118,8 +118,8 @@ public class SysHbaseFamilyController extends SysHbaseBaseController {
     /**
      * 修改保存HBase Family
      */
-    @RequiresPermissions("system:family:edit")
-    @Log(title = "HBase Family", businessType = BusinessType.UPDATE)
+    @RequiresPermissions("hbase:family:edit")
+    @Log(title = "HBase列簇信息更新", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
     public AjaxResult editSave(FamilyDescDto familyDescDto) {
@@ -134,8 +134,8 @@ public class SysHbaseFamilyController extends SysHbaseBaseController {
     /**
      * 删除HBase Family
      */
-    @RequiresPermissions("system:family:remove")
-    @Log(title = "HBase Family", businessType = BusinessType.DELETE)
+    @RequiresPermissions("hbase:family:remove")
+    @Log(title = "HBase列簇删除", businessType = BusinessType.DELETE)
     @PostMapping("/remove")
     @ResponseBody
     public AjaxResult remove(String ids) {

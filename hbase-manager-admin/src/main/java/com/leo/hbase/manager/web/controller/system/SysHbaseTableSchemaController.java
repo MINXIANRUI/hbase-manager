@@ -36,7 +36,7 @@ public class SysHbaseTableSchemaController extends SysHbaseBaseController {
     private IMultiHBaseAdminService multiHBaseAdminService;
 
 
-    @RequiresPermissions("system:schema:view")
+    @RequiresPermissions("hbase:schema:view")
     @GetMapping()
     public String schema(ModelMap mmap) {
         final List<String> allTableNames = multiHBaseAdminService.listAllTableName(clusterCodeOfCurrentSession(), true);
@@ -52,7 +52,7 @@ public class SysHbaseTableSchemaController extends SysHbaseBaseController {
     /**
      * 新增保存HBaseTableSchema
      */
-    @RequiresPermissions("system:schema:add")
+    @RequiresPermissions("hbase:schema:add")
     @Log(title = "HBaseTableSchema", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
@@ -62,14 +62,14 @@ public class SysHbaseTableSchemaController extends SysHbaseBaseController {
         if (!tableExists) {
             return error("表[" + tableDesc.getTableName() + "]不存在");
         }
-        multiHBaseAdminService.modifyTable(clusterCodeOfCurrentSession(), tableDesc);
+        multiHBaseAdminService.modifyTableProps(clusterCodeOfCurrentSession(), tableDesc);
         return AjaxResult.success("HBaseTableSchema添加成功");
     }
 
     /**
      * 删除HBaseTableSchema
      */
-    @RequiresPermissions("system:schema:remove")
+    @RequiresPermissions("hbase:schema:remove")
     @Log(title = "HBaseTableSchema", businessType = BusinessType.DELETE)
     @PostMapping("/remove")
     @ResponseBody
@@ -84,7 +84,7 @@ public class SysHbaseTableSchemaController extends SysHbaseBaseController {
         }
 
         tableDesc = tableDesc.updateProps(tableProps);
-        multiHBaseAdminService.modifyTable(clusterCodeOfCurrentSession(), tableDesc);
+        multiHBaseAdminService.modifyTableProps(clusterCodeOfCurrentSession(), tableDesc);
 
         return AjaxResult.success("HBaseTableSchema移除成功");
     }
@@ -92,7 +92,7 @@ public class SysHbaseTableSchemaController extends SysHbaseBaseController {
     /**
      * 查询HBase Schema 列表
      */
-    @RequiresPermissions("system:schema:list")
+    @RequiresPermissions("hbase:schema:list")
     @PostMapping("/list")
     @ResponseBody
     public TableDataInfo list(TableSchemaDto tableSchemaDto) {

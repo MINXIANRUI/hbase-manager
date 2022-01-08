@@ -995,97 +995,97 @@ INSERT INTO `sys_menu`
 VALUES (1061, '生成代码', 114, 5, '#', '', 'F', '0', 'tool:gen:code', '#', 'admin', '2018-03-16 11:33:00', 'leo',
         '2018-03-16 11:33:00', '');
 INSERT INTO `sys_menu`
-VALUES (2000, '命名空间', 2006, 1, '/system/namespace', 'menuItem', 'C', '0', 'system:namespace:view', '#', 'admin',
+VALUES (2000, '命名空间', 2006, 1, '/system/namespace', 'menuItem', 'C', '0', 'hbase:namespace:view', '#', 'admin',
         '2018-03-01 00:00:00', 'admin', '2020-08-22 14:01:31', 'HBaseNamespace菜单');
 INSERT INTO `sys_menu`
-VALUES (2001, 'namespace查询', 2000, 1, '#', '', 'F', '0', 'system:namespace:list', '#', 'admin', '2018-03-01 00:00:00',
+VALUES (2001, 'namespace查询', 2000, 1, '#', '', 'F', '0', 'hbase:namespace:list', '#', 'admin', '2018-03-01 00:00:00',
         'leo', '2018-03-01 00:00:00', '');
 INSERT INTO `sys_menu`
-VALUES (2002, 'namespace新增', 2000, 2, '#', '', 'F', '0', 'system:namespace:add', '#', 'admin', '2018-03-01 00:00:00',
+VALUES (2002, 'namespace新增', 2000, 2, '#', '', 'F', '0', 'hbase:namespace:add', '#', 'admin', '2018-03-01 00:00:00',
         'leo', '2018-03-01 00:00:00', '');
 INSERT INTO `sys_menu`
-VALUES (2003, 'namespace修改', 2000, 3, '#', '', 'F', '0', 'system:namespace:edit', '#', 'admin', '2018-03-01 00:00:00',
+VALUES (2003, 'namespace修改', 2000, 3, '#', '', 'F', '0', 'hbase:namespace:edit', '#', 'admin', '2018-03-01 00:00:00',
         'leo', '2018-03-01 00:00:00', '');
 INSERT INTO `sys_menu`
-VALUES (2004, 'namespace删除', 2000, 4, '#', '', 'F', '0', 'system:namespace:remove', '#', 'admin', '2018-03-01 00:00:00',
+VALUES (2004, 'namespace删除', 2000, 4, '#', '', 'F', '0', 'hbase:namespace:remove', '#', 'admin', '2018-03-01 00:00:00',
         'leo', '2018-03-01 00:00:00', '');
 INSERT INTO `sys_menu`
-VALUES (2005, 'namespace导出', 2000, 5, '#', '', 'F', '0', 'system:namespace:export', '#', 'admin', '2018-03-01 00:00:00',
+VALUES (2005, 'namespace导出', 2000, 5, '#', '', 'F', '0', 'hbase:namespace:export', '#', 'admin', '2018-03-01 00:00:00',
         'leo', '2018-03-01 00:00:00', '');
 INSERT INTO `sys_menu`
 VALUES (2006, 'HBase表管理', 0, 1, '#', 'menuItem', 'M', '0', '', 'fa fa-newspaper-o', 'admin', '2020-08-16 07:24:06',
         'admin', '2020-08-16 07:24:38', '');
 INSERT INTO `sys_menu`
-VALUES (2007, 'HBase表管理', 2006, 2, '/system/table', 'menuItem', 'C', '0', 'system:table:view', '#', 'admin',
+VALUES (2007, 'HBase表管理', 2006, 2, '/system/table', 'menuItem', 'C', '0', 'hbase:table:view', '#', 'admin',
         '2018-03-01 00:00:00', 'admin', '2020-08-22 14:02:06', 'HBase表菜单');
 INSERT INTO `sys_menu`
-VALUES (2008, 'HBase表查询', 2007, 1, '#', '', 'F', '0', 'system:table:list', '#', 'admin', '2018-03-01 00:00:00', 'leo',
+VALUES (2008, 'HBase表查询', 2007, 1, '#', '', 'F', '0', 'hbase:table:list', '#', 'admin', '2018-03-01 00:00:00', 'leo',
         '2018-03-01 00:00:00', '');
 INSERT INTO `sys_menu`
-VALUES (2009, 'HBase表新增', 2007, 2, '#', '', 'F', '0', 'system:table:add', '#', 'admin', '2018-03-01 00:00:00', 'leo',
+VALUES (2009, 'HBase表新增', 2007, 2, '#', '', 'F', '0', 'hbase:table:add', '#', 'admin', '2018-03-01 00:00:00', 'leo',
         '2018-03-01 00:00:00', '');
 INSERT INTO `sys_menu`
-VALUES (2010, 'HBase表修改', 2007, 3, '#', '', 'F', '0', 'system:table:edit', '#', 'admin', '2018-03-01 00:00:00', 'leo',
+VALUES (2010, 'HBase表修改', 2007, 3, '#', '', 'F', '0', 'hbase:table:edit', '#', 'admin', '2018-03-01 00:00:00', 'leo',
         '2018-03-01 00:00:00', '');
 INSERT INTO `sys_menu`
-VALUES (2011, 'HBase表删除', 2007, 4, '#', '', 'F', '0', 'system:table:remove', '#', 'admin', '2018-03-01 00:00:00', 'leo',
+VALUES (2011, 'HBase表删除', 2007, 4, '#', '', 'F', '0', 'hbase:table:remove', '#', 'admin', '2018-03-01 00:00:00', 'leo',
         '2018-03-01 00:00:00', '');
 INSERT INTO `sys_menu`
-VALUES (2012, 'HBase表导出', 2007, 5, '#', '', 'F', '0', 'system:table:export', '#', 'admin', '2018-03-01 00:00:00', 'leo',
+VALUES (2012, 'HBase表导出', 2007, 5, '#', '', 'F', '0', 'hbase:table:export', '#', 'admin', '2018-03-01 00:00:00', 'leo',
         '2018-03-01 00:00:00', '');
 INSERT INTO `sys_menu`
-VALUES (2013, '标签管理', 2006, 4, '/system/tag', 'menuItem', 'C', '0', 'system:tag:view', '#', 'admin',
+VALUES (2013, '标签管理', 2006, 4, '/system/tag', 'menuItem', 'C', '0', 'hbase:tag:view', '#', 'admin',
         '2018-03-01 00:00:00', 'admin', '2020-08-22 14:03:08', 'HBaseTag菜单');
 INSERT INTO `sys_menu`
-VALUES (2014, 'HBaseTag查询', 2013, 1, '#', '', 'F', '0', 'system:tag:list', '#', 'admin', '2018-03-01 00:00:00', 'leo',
+VALUES (2014, 'HBaseTag查询', 2013, 1, '#', '', 'F', '0', 'hbase:tag:list', '#', 'admin', '2018-03-01 00:00:00', 'leo',
         '2018-03-01 00:00:00', '');
 INSERT INTO `sys_menu`
-VALUES (2015, 'HBaseTag新增', 2013, 2, '#', '', 'F', '0', 'system:tag:add', '#', 'admin', '2018-03-01 00:00:00', 'leo',
+VALUES (2015, 'HBaseTag新增', 2013, 2, '#', '', 'F', '0', 'hbase:tag:add', '#', 'admin', '2018-03-01 00:00:00', 'leo',
         '2018-03-01 00:00:00', '');
 INSERT INTO `sys_menu`
-VALUES (2016, 'HBaseTag修改', 2013, 3, '#', '', 'F', '0', 'system:tag:edit', '#', 'admin', '2018-03-01 00:00:00', 'leo',
+VALUES (2016, 'HBaseTag修改', 2013, 3, '#', '', 'F', '0', 'hbase:tag:edit', '#', 'admin', '2018-03-01 00:00:00', 'leo',
         '2018-03-01 00:00:00', '');
 INSERT INTO `sys_menu`
-VALUES (2018, 'HBaseTag导出', 2013, 5, '#', '', 'F', '0', 'system:tag:export', '#', 'admin', '2018-03-01 00:00:00', 'leo',
+VALUES (2018, 'HBaseTag导出', 2013, 5, '#', '', 'F', '0', 'hbase:tag:export', '#', 'admin', '2018-03-01 00:00:00', 'leo',
         '2018-03-01 00:00:00', '');
 INSERT INTO `sys_menu`
-VALUES (2019, '查看详情', 2007, 6, '#', 'menuItem', 'F', '0', 'system:table:detail', '#', 'admin', '2020-08-21 14:54:22',
+VALUES (2019, '查看详情', 2007, 6, '#', 'menuItem', 'F', '0', 'hbase:table:detail', '#', 'admin', '2020-08-21 14:54:22',
         '', NULL, '');
 INSERT INTO `sys_menu`
-VALUES (2020, '列簇管理', 2006, 3, '/system/family', 'menuItem', 'C', '1', 'system:family:view', '#', 'admin',
+VALUES (2020, '列簇管理', 2006, 3, '/system/family', 'menuItem', 'C', '1', 'hbase:family:view', '#', 'admin',
         '2018-03-01 00:00:00', 'admin', '2020-08-23 07:03:57', 'HBase Family菜单');
 INSERT INTO `sys_menu`
-VALUES (2021, 'HBase列簇', 2020, 1, '#', '', 'F', '0', 'system:family:list', '#', 'admin', '2018-03-01 00:00:00', 'leo',
+VALUES (2021, 'HBase列簇', 2020, 1, '#', '', 'F', '0', 'hbase:family:list', '#', 'admin', '2018-03-01 00:00:00', 'leo',
         '2018-03-01 00:00:00', '');
 INSERT INTO `sys_menu`
-VALUES (2022, 'HBase列簇新增', 2020, 2, '#', '', 'F', '0', 'system:family:add', '#', 'admin', '2018-03-01 00:00:00', 'leo',
+VALUES (2022, 'HBase列簇新增', 2020, 2, '#', '', 'F', '0', 'hbase:family:add', '#', 'admin', '2018-03-01 00:00:00', 'leo',
         '2018-03-01 00:00:00', '');
 INSERT INTO `sys_menu`
-VALUES (2023, 'HBase列簇修改', 2020, 3, '#', '', 'F', '0', 'system:family:edit', '#', 'admin', '2018-03-01 00:00:00', 'leo',
+VALUES (2023, 'HBase列簇修改', 2020, 3, '#', '', 'F', '0', 'hbase:family:edit', '#', 'admin', '2018-03-01 00:00:00', 'leo',
         '2018-03-01 00:00:00', '');
 INSERT INTO `sys_menu`
-VALUES (2024, 'HBase列簇删除', 2020, 4, '#', '', 'F', '0', 'system:family:remove', '#', 'admin', '2018-03-01 00:00:00',
+VALUES (2024, 'HBase列簇删除', 2020, 4, '#', '', 'F', '0', 'hbase:family:remove', '#', 'admin', '2018-03-01 00:00:00',
         'leo', '2018-03-01 00:00:00', '');
 INSERT INTO `sys_menu`
-VALUES (2025, 'HBase列簇导出', 2020, 5, '#', '', 'F', '0', 'system:family:export', '#', 'admin', '2018-03-01 00:00:00',
+VALUES (2025, 'HBase列簇导出', 2020, 5, '#', '', 'F', '0', 'hbase:family:export', '#', 'admin', '2018-03-01 00:00:00',
         'leo', '2018-03-01 00:00:00', '');
 INSERT INTO `sys_menu`
-VALUES (2026, 'HBase表数据管理', 2006, 5, '/system/data', 'menuItem', 'C', '0', 'system:data:view', '#', 'admin',
+VALUES (2026, 'HBase表数据管理', 2006, 5, '/system/data', 'menuItem', 'C', '0', 'hbase:data:view', '#', 'admin',
         '2018-03-01 00:00:00', 'admin', '2020-09-07 12:52:45', 'HBase表数据管理菜单');
 INSERT INTO `sys_menu`
-VALUES (2027, 'HBase表数据查询', 2026, 1, '#', '', 'F', '0', 'system:data:list', '#', 'admin', '2018-03-01 00:00:00', 'leo',
+VALUES (2027, 'HBase表数据查询', 2026, 1, '#', '', 'F', '0', 'hbase:data:list', '#', 'admin', '2018-03-01 00:00:00', 'leo',
         '2018-03-01 00:00:00', '');
 INSERT INTO `sys_menu`
-VALUES (2028, 'HBase表数据新增', 2026, 2, '#', '', 'F', '0', 'system:data:add', '#', 'admin', '2018-03-01 00:00:00', 'leo',
+VALUES (2028, 'HBase表数据新增', 2026, 2, '#', '', 'F', '0', 'hbase:data:add', '#', 'admin', '2018-03-01 00:00:00', 'leo',
         '2018-03-01 00:00:00', '');
 INSERT INTO `sys_menu`
-VALUES (2029, 'HBase表数据修改', 2026, 3, '#', '', 'F', '0', 'system:data:edit', '#', 'admin', '2018-03-01 00:00:00', 'leo',
+VALUES (2029, 'HBase表数据修改', 2026, 3, '#', '', 'F', '0', 'hbase:data:edit', '#', 'admin', '2018-03-01 00:00:00', 'leo',
         '2018-03-01 00:00:00', '');
 INSERT INTO `sys_menu`
-VALUES (2030, 'HBase表数据删除', 2026, 4, '#', '', 'F', '0', 'system:data:remove', '#', 'admin', '2018-03-01 00:00:00',
+VALUES (2030, 'HBase表数据删除', 2026, 4, '#', '', 'F', '0', 'hbase:data:remove', '#', 'admin', '2018-03-01 00:00:00',
         'leo', '2018-03-01 00:00:00', '');
 INSERT INTO `sys_menu`
-VALUES (2031, 'HBase表数据导出', 2026, 5, '#', '', 'F', '0', 'system:data:export', '#', 'admin', '2018-03-01 00:00:00',
+VALUES (2031, 'HBase表数据导出', 2026, 5, '#', '', 'F', '0', 'hbase:data:export', '#', 'admin', '2018-03-01 00:00:00',
         'leo', '2018-03-01 00:00:00', '');
 COMMIT;
 

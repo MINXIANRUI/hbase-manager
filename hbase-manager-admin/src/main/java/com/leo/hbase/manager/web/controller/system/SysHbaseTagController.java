@@ -30,7 +30,7 @@ public class SysHbaseTagController extends BaseController {
     @Autowired
     private ISysHbaseTagService sysHbaseTagService;
 
-    @RequiresPermissions("system:tag:view")
+    @RequiresPermissions("hbase:tag:view")
     @GetMapping()
     public String tag() {
         return prefix + "/tag";
@@ -39,7 +39,7 @@ public class SysHbaseTagController extends BaseController {
     /**
      * 查询HBaseTag列表
      */
-    @RequiresPermissions("system:tag:list")
+    @RequiresPermissions("hbase:tag:list")
     @PostMapping("/list")
     @ResponseBody
     public TableDataInfo list(SysHbaseTag sysHbaseTag) {
@@ -51,8 +51,8 @@ public class SysHbaseTagController extends BaseController {
     /**
      * 导出HBaseTag列表
      */
-    @RequiresPermissions("system:tag:export")
-    @Log(title = "HBaseTag", businessType = BusinessType.EXPORT)
+    @RequiresPermissions("hbase:tag:export")
+    @Log(title = "HBase标签导出", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     @ResponseBody
     public AjaxResult export(SysHbaseTag sysHbaseTag) {
@@ -72,8 +72,8 @@ public class SysHbaseTagController extends BaseController {
     /**
      * 新增保存HBaseTag
      */
-    @RequiresPermissions("system:tag:add")
-    @Log(title = "HBaseTag", businessType = BusinessType.INSERT)
+    @RequiresPermissions("hbase:tag:add")
+    @Log(title = "HBase标签新增", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
     public AjaxResult addSave(SysHbaseTag sysHbaseTag) {
@@ -101,8 +101,8 @@ public class SysHbaseTagController extends BaseController {
     /**
      * 修改保存HBaseTag
      */
-    @RequiresPermissions("system:tag:edit")
-    @Log(title = "HBaseTag", businessType = BusinessType.UPDATE)
+    @RequiresPermissions("hbase:tag:edit")
+    @Log(title = "HBase标签更新", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
     public AjaxResult editSave(SysHbaseTag sysHbaseTag) {
@@ -126,8 +126,8 @@ public class SysHbaseTagController extends BaseController {
     /**
      * 删除HBaseTag
      */
-    @RequiresPermissions("system:tag:remove")
-    @Log(title = "HBaseTag", businessType = BusinessType.DELETE)
+    @RequiresPermissions("hbase:tag:remove")
+    @Log(title = "HBase标签删除", businessType = BusinessType.DELETE)
     @PostMapping("/remove")
     @ResponseBody
     public AjaxResult remove(Long ids) {

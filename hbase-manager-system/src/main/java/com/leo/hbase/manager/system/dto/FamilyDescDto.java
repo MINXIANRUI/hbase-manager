@@ -28,11 +28,13 @@ public class FamilyDescDto {
     @Excel(name = "family名称")
     private String familyName;
 
-    @Excel(name = "最小版本号")
-    private Integer minVersions;
+    @Excel(name = "最大版本号")
+    private Integer maxVersions;
 
     @Excel(name = "ttl")
     private Integer timeToLive;
+
+    private String ttl;
 
     @Excel(name = "列簇压缩类型")
     private String compressionType;
@@ -77,15 +79,15 @@ public class FamilyDescDto {
 
     @Min(value = 1, message = "最小版本数不能小于1", groups = {Second.class})
     @Max(value = 999999, message = "最小版本数不能大于999999", groups = {Third.class})
-    public Integer getMinVersions() {
-        if (minVersions == null) {
-            minVersions = HMHBaseConstant.DEFAULT_MAX_VERSIONS;
+    public Integer getMaxVersions() {
+        if (maxVersions == null) {
+            maxVersions = HMHBaseConstant.DEFAULT_MAX_VERSIONS;
         }
-        return minVersions;
+        return maxVersions;
     }
 
-    public void setMinVersions(Integer minVersions) {
-        this.minVersions = minVersions;
+    public void setMaxVersions(Integer maxVersions) {
+        this.maxVersions = maxVersions;
     }
 
     @Min(value = 1, message = "TTL不能小于1", groups = {Fourth.class})
@@ -99,6 +101,14 @@ public class FamilyDescDto {
 
     public void setTimeToLive(Integer timeToLive) {
         this.timeToLive = timeToLive;
+    }
+
+    public String getTtl() {
+        return ttl;
+    }
+
+    public void setTtl(String ttl) {
+        this.ttl = ttl;
     }
 
     public String getCompressionType() {
@@ -129,7 +139,7 @@ public class FamilyDescDto {
         protected ColumnFamilyDesc doForward(FamilyDescDto columnFamilyDescDto) {
             return new ColumnFamilyDesc.Builder()
                     .familyName(columnFamilyDescDto.getFamilyName())
-                    .minVersions(columnFamilyDescDto.getMinVersions())
+                    .versions(columnFamilyDescDto.getMaxVersions())
                     .timeToLive(columnFamilyDescDto.getTimeToLive())
                     .compressionType(columnFamilyDescDto.getCompressionType())
                     .replicationScope(columnFamilyDescDto.getReplicationScope())
@@ -141,10 +151,11 @@ public class FamilyDescDto {
             FamilyDescDto columnFamilyDescDto = new FamilyDescDto();
             columnFamilyDescDto.setFamilyId(columnFamilyDesc.getFamilyName());
             columnFamilyDescDto.setFamilyName(columnFamilyDesc.getFamilyName());
-            columnFamilyDescDto.setMinVersions(columnFamilyDesc.getMinVersions());
+            columnFamilyDescDto.setMaxVersions(columnFamilyDesc.getVersions());
             columnFamilyDescDto.setCompressionType(columnFamilyDesc.getCompressionType());
             columnFamilyDescDto.setReplicationScope(columnFamilyDesc.getReplicationScope());
             columnFamilyDescDto.setTimeToLive(columnFamilyDesc.getTimeToLive());
+            columnFamilyDescDto.setTtl(columnFamilyDesc.getTTL());
             return columnFamilyDescDto;
         }
     }
@@ -155,8 +166,9 @@ public class FamilyDescDto {
                 .append("tableName", getTableName())
                 .append("familyId", getFamilyId())
                 .append("familyName", getFamilyName())
-                .append("minVersions", getMinVersions())
+                .append("maxVersions", getMaxVersions())
                 .append("timeToLive", getTimeToLive())
+                .append("ttl", getTtl())
                 .append("compressionType", getCompressionType())
                 .append("replicationScope", getReplicationScope())
                 .toString();

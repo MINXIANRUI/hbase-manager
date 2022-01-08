@@ -41,7 +41,7 @@ public class SysHbaseTableSqlController extends SysHbaseBaseController {
     private IMultiHBaseService multiHBaseService;
 
 
-    @RequiresPermissions("system:sql:view")
+    @RequiresPermissions("hbase:sql:view")
     @GetMapping()
     public String sql() {
         return prefix + "/sql";
@@ -50,7 +50,7 @@ public class SysHbaseTableSqlController extends SysHbaseBaseController {
     /**
      * 用SQL查询HBase表数据
      */
-    @RequiresPermissions("system:sql:query")
+    @RequiresPermissions("hbase:sql:query")
     @PostMapping("/query")
     @ResponseBody
     public TableDataInfo query(@Validated QueryHBaseSqlDto hBaseSqlDto) {

@@ -35,7 +35,7 @@ public class SysHbaseNamespaceController extends SysHbaseBaseController {
     @Autowired
     private IMultiHBaseAdminService multiHBaseAdminService;
 
-    @RequiresPermissions("system:namespace:view")
+    @RequiresPermissions("hbase:namespace:view")
     @GetMapping()
     public String namespace() {
         return prefix + "/namespace";
@@ -44,7 +44,7 @@ public class SysHbaseNamespaceController extends SysHbaseBaseController {
     /**
      * 查询HBaseNamespace列表
      */
-    @RequiresPermissions("system:namespace:list")
+    @RequiresPermissions("hbase:namespace:list")
     @PostMapping("/list")
     @ResponseBody
     public TableDataInfo list(NamespaceDescDto namespaceDescDto) {
@@ -60,8 +60,8 @@ public class SysHbaseNamespaceController extends SysHbaseBaseController {
     /**
      * 导出HBaseNamespace列表
      */
-    @RequiresPermissions("system:namespace:export")
-    @Log(title = "HBaseNamespace", businessType = BusinessType.EXPORT)
+    @RequiresPermissions("hbase:namespace:export")
+    @Log(title = "HBase命名空间导出", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     @ResponseBody
     public AjaxResult export(NamespaceDescDto namespaceDescDto) {
@@ -85,8 +85,8 @@ public class SysHbaseNamespaceController extends SysHbaseBaseController {
     /**
      * 新增保存HBaseNamespace
      */
-    @RequiresPermissions("system:namespace:add")
-    @Log(title = "HBaseNamespace", businessType = BusinessType.INSERT)
+    @RequiresPermissions("hbase:namespace:add")
+    @Log(title = "HBase命名空间新增", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
     public AjaxResult addSave(@Validated NamespaceDescDto namespaceDescDto) {
@@ -127,8 +127,8 @@ public class SysHbaseNamespaceController extends SysHbaseBaseController {
     /**
      * 修改保存HBaseNamespace
      */
-    @RequiresPermissions("system:namespace:edit")
-    @Log(title = "HBaseNamespace", businessType = BusinessType.UPDATE)
+    @RequiresPermissions("hbase:namespace:edit")
+    @Log(title = "HBase命名空间更新", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
     public AjaxResult editSave(@Validated NamespaceDescDto namespaceDescDto) {
@@ -138,8 +138,8 @@ public class SysHbaseNamespaceController extends SysHbaseBaseController {
     /**
      * 删除HBaseNamespace
      */
-    @RequiresPermissions("system:namespace:remove")
-    @Log(title = "HBaseNamespace", businessType = BusinessType.DELETE)
+    @RequiresPermissions("hbase:namespace:remove")
+    @Log(title = "HBase命名空间移除", businessType = BusinessType.DELETE)
     @PostMapping("/remove")
     @ResponseBody
     public AjaxResult remove(String ids) {

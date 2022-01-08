@@ -1,5 +1,7 @@
 package com.leo.hbase.manager.system.dto;
 
+import com.github.CCweixiao.constant.HMHBaseConstant;
+import com.github.CCweixiao.exception.HBaseOperationsException;
 import com.github.CCweixiao.model.ColumnFamilyDesc;
 import com.github.CCweixiao.model.HTableDesc;
 import com.google.common.base.Converter;
@@ -24,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @author leojie 2020/9/10 10:27 下午
@@ -180,7 +181,7 @@ public class TableDescDto {
         @Override
         protected HTableDesc doForward(TableDescDto tableDescDto) {
             HTableDesc.Builder tableDescBuilder = new HTableDesc.Builder()
-                    .defaultTableDescWithNs(tableDescDto.getNamespaceId(), tableDescDto.getTableName());
+                    .defaultTableDesc(tableDescDto.getTableName());
 
             List<Property> propertyList = tableDescDto.getPropertyList();
             propertyList.add(new Property(HBasePropertyConstants.STATUS, tableDescDto.getStatus()));
@@ -250,7 +251,15 @@ public class TableDescDto {
                 tableDescDto.setLastUpdateTimestamp(Long.parseLong(tableProps.getOrDefault(HBasePropertyConstants.LAST_UPDATE_TIMESTAMP, "0")));
                 tableDescDto.setLastMajorCompactTimestamp(tableDesc.getLastMajorCompaction());
             }
-
+            String disableTag;
+            if (tableDesc.getState().equals(HMHBaseConstant.ENABLED)) {
+                disableTag = "0";
+            }else if (tableDesc.getState().equals(HMHBaseConstant.DISABLED)) {
+                disableTag = "2";
+            }else {
+                throw new HBaseOperationsException("未知的表状态"+ tableDesc.getState());
+            }
+            tableDescDto.setDisableFlag(disableTag);
             return tableDescDto;
         }
     }

@@ -60,7 +60,7 @@ public interface ISysUserHbaseTableService {
      * @param ids 需要删除的数据ID
      * @return 结果
      */
-    public int deleteSysUserHbaseTableByIds(String ids);
+    public int deleteSysUserHbaseTableByUserIds(String ids);
 
     /**
      * 删除用户和HBase的关联信息

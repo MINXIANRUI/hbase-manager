@@ -294,6 +294,15 @@ public interface IMultiHBaseAdminService {
     boolean modifyTable(String clusterCode, HTableDesc tableDesc);
 
     /**
+     * 修改表属性
+     *
+     * @param clusterCode 集群ID
+     * @param tableDesc   表描述
+     * @return 结果
+     */
+    boolean modifyTableProps(String clusterCode, HTableDesc tableDesc);
+
+    /**
      * 获取region server的数量
      *
      * @param clusterCode 集群ID
