@@ -1,6 +1,6 @@
 package com.leo.hbase.manager.web.controller.system;
 
-import com.github.CCweixiao.model.TableDesc;
+import com.github.CCweixiao.model.HTableDesc;
 import com.leo.hbase.manager.common.annotation.Log;
 import com.leo.hbase.manager.common.core.domain.AjaxResult;
 import com.leo.hbase.manager.common.core.page.TableDataInfo;
@@ -57,7 +57,7 @@ public class SysHbaseTableSchemaController extends SysHbaseBaseController {
     @PostMapping("/add")
     @ResponseBody
     public AjaxResult addSave(@Validated TableSchemaDto tableSchemaDto) {
-        TableDesc tableDesc = tableSchemaDto.convertTo();
+        HTableDesc tableDesc = tableSchemaDto.convertTo();
         boolean tableExists = multiHBaseAdminService.tableIsExists(clusterCodeOfCurrentSession(), tableDesc.getTableName());
         if (!tableExists) {
             return error("表[" + tableDesc.getTableName() + "]不存在");
@@ -75,15 +75,17 @@ public class SysHbaseTableSchemaController extends SysHbaseBaseController {
     @ResponseBody
     public AjaxResult removeTableSchema(String ids) {
         final String tableName = StrEnDeUtils.decrypt(ids);
-        TableDesc tableDesc = multiHBaseAdminService.getTableDesc(clusterCodeOfCurrentSession(), tableName);
+        HTableDesc tableDesc = multiHBaseAdminService.getHTableDesc(clusterCodeOfCurrentSession(), tableName);
         Map<String, String> tableProps = tableDesc.getTableProps();
         if (tableProps == null || tableProps.isEmpty()) {
             tableProps = new HashMap<>(1);
         } else {
             tableProps.put("tableSchema", "");
         }
-        tableDesc.setTableProps(tableProps);
+
+        tableDesc = tableDesc.updateProps(tableProps);
         multiHBaseAdminService.modifyTable(clusterCodeOfCurrentSession(), tableDesc);
+
         return AjaxResult.success("HBaseTableSchema移除成功");
     }
 
@@ -96,7 +98,7 @@ public class SysHbaseTableSchemaController extends SysHbaseBaseController {
     public TableDataInfo list(TableSchemaDto tableSchemaDto) {
         String currentCluster = clusterCodeOfCurrentSession();
 
-        final List<TableSchemaDto> tableSchemaDtoList = multiHBaseAdminService.listAllTableDesc(currentCluster, true)
+        final List<TableSchemaDto> tableSchemaDtoList = multiHBaseAdminService.listAllHTableDesc(currentCluster, true)
                 .stream().filter(tableDesc -> {
                     if (StringUtils.isBlank(tableSchemaDto.getTableName())) {
                         return true;

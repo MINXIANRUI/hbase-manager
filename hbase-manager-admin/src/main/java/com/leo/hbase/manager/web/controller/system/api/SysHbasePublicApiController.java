@@ -1,6 +1,6 @@
 package com.leo.hbase.manager.web.controller.system.api;
 
-import com.github.CCweixiao.model.TableDesc;
+import com.github.CCweixiao.model.HTableDesc;
 import com.leo.hbase.manager.common.core.domain.AjaxResult;
 import com.leo.hbase.manager.common.enums.HBaseDisabledFlag;
 import com.leo.hbase.manager.common.enums.HBaseTableStatus;
@@ -39,7 +39,7 @@ public class SysHbasePublicApiController {
     @PostMapping("/onlineTables")
     public AjaxResult list(@Validated QueryOnlineHBaseTableForm queryOnlineHBaseTableForm) {
 
-        final List<TableDesc> tableDescList = multiHBaseAdminService.listAllTableDesc(queryOnlineHBaseTableForm.getCluster(), false);
+        final List<HTableDesc> tableDescList = multiHBaseAdminService.listAllHTableDesc(queryOnlineHBaseTableForm.getCluster(), false);
 
         final List<TableDescDto> tableDescDtoList = tableDescList.stream().map(tableDesc -> new TableDescDto().convertFor(tableDesc)).filter(tableDescDto -> {
             if (StringUtils.isNotBlank(queryOnlineHBaseTableForm.getNamespaceName())) {

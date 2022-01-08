@@ -1,7 +1,7 @@
 package com.leo.hbase.manager.system.dto;
 
-import com.github.CCweixiao.model.FamilyDesc;
-import com.github.CCweixiao.model.TableDesc;
+import com.github.CCweixiao.model.ColumnFamilyDesc;
+import com.github.CCweixiao.model.HTableDesc;
 import com.google.common.base.Converter;
 import com.leo.hbase.manager.common.annotation.Excel;
 import com.leo.hbase.manager.common.constant.HBasePropertyConstants;
@@ -164,35 +164,25 @@ public class TableDescDto {
      */
     private long lastMajorCompactTimestamp;
 
-    public TableDesc convertTo() {
+    public HTableDesc convertTo() {
         TableDescDto.TableDescDtoConvert convert = new TableDescDto.TableDescDtoConvert();
         return convert.convert(this);
     }
 
-    public TableDescDto convertFor(TableDesc tableDesc) {
+    public TableDescDto convertFor(HTableDesc tableDesc) {
         TableDescDto.TableDescDtoConvert convert = new TableDescDto.TableDescDtoConvert();
         return convert.reverse().convert(tableDesc);
     }
 
 
-    public static class TableDescDtoConvert extends Converter<TableDescDto, TableDesc> {
+    public static class TableDescDtoConvert extends Converter<TableDescDto, HTableDesc> {
 
         @Override
-        protected TableDesc doForward(TableDescDto tableDescDto) {
-            TableDesc tableDesc = new TableDesc();
-            // 设置命名空间和表名
-            tableDesc.setNamespaceName(tableDescDto.getNamespaceId());
-            tableDesc.setTableName(tableDescDto.getTableName());
-            final String disableFlag = tableDescDto.getDisableFlag();
-            if (HBaseDisabledFlag.DISABLED.getCode().equals(disableFlag)) {
-                tableDesc.setDisabled(true);
-            } else if (HBaseDisabledFlag.ENABLED.getCode().equals(disableFlag)) {
-                tableDesc.setDisabled(false);
-            } else {
-                tableDesc.setDisabled(false);
-            }
-            List<Property> propertyList = tableDescDto.getPropertyList();
+        protected HTableDesc doForward(TableDescDto tableDescDto) {
+            HTableDesc.Builder tableDescBuilder = new HTableDesc.Builder()
+                    .defaultTableDescWithNs(tableDescDto.getNamespaceId(), tableDescDto.getTableName());
 
+            List<Property> propertyList = tableDescDto.getPropertyList();
             propertyList.add(new Property(HBasePropertyConstants.STATUS, tableDescDto.getStatus()));
             propertyList.add(new Property(HBasePropertyConstants.REMARK, tableDescDto.getRemark()));
             String tagIdStr = "";
@@ -206,30 +196,29 @@ public class TableDescDto {
             propertyList.add(new Property(HBasePropertyConstants.LAST_UPDATE_BY, tableDescDto.getLastUpdateBy()));
             propertyList.add(new Property(HBasePropertyConstants.LAST_UPDATE_TIMESTAMP, tableDescDto.getLastUpdateTimestamp().toString()));
             // 遍历添加属性
-            propertyList.forEach(property -> tableDesc.addProp(property.getKey(), property.getValue()));
+            propertyList.forEach(property -> tableDescBuilder.addTableProp(property.getKey(), property.getValue()));
 
             final List<FamilyDescDto> families = tableDescDto.getFamilies();
             if (families != null && !families.isEmpty()) {
-                final List<FamilyDesc> familyDescList = families.stream().map(FamilyDescDto::convertTo).collect(Collectors.toList());
-                tableDesc.setFamilyDescList(familyDescList);
+                families.stream().map(FamilyDescDto::convertTo).forEach(tableDescBuilder::addColumnFamilyDesc);
             }
 
-            return tableDesc;
+            return tableDescBuilder.build();
         }
 
         @Override
-        protected TableDescDto doBackward(TableDesc tableDesc) {
+        protected TableDescDto doBackward(HTableDesc tableDesc) {
             TableDescDto tableDescDto = new TableDescDto();
             tableDescDto.setNamespaceId(tableDesc.getNamespaceName());
             tableDescDto.setNamespaceName(tableDesc.getNamespaceName());
             tableDescDto.setTableName(tableDesc.getTableName());
             tableDescDto.setTableId(StrEnDeUtils.encrypt(tableDesc.getTableName()));
 
-            String metaTable = tableDesc.isMetaTable() ? HBaseMetaTableFlag.META_TABLE.getCode() : HBaseMetaTableFlag.USER_TABLE.getCode();
-            tableDescDto.setMetaTable(metaTable);
-            String disableStatus = tableDesc.isDisabled() ? HBaseDisabledFlag.DISABLED.getCode() : HBaseDisabledFlag.ENABLED.getCode();
+            // String metaTable = tableDesc.isMetaTable() ? HBaseMetaTableFlag.META_TABLE.getCode() : HBaseMetaTableFlag.USER_TABLE.getCode();
+            // tableDescDto.setMetaTable(metaTable);
+            String disableStatus = tableDesc.getState();
             tableDescDto.setDisableFlag(disableStatus);
-            String desc = StringUtils.getStringByEnter(110, tableDesc.getTableDesc());
+            String desc = StringUtils.getStringByEnter(110, tableDesc.toString());
             tableDescDto.setTableDesc(desc);
 
             final Map<String, String> tableProps = tableDesc.getTableProps();
@@ -259,7 +248,7 @@ public class TableDescDto {
                 tableDescDto.setCreateTimestamp(Long.parseLong(tableProps.getOrDefault(HBasePropertyConstants.CREATE_TIMESTAMP, "0")));
                 tableDescDto.setLastUpdateBy(tableProps.getOrDefault(HBasePropertyConstants.LAST_UPDATE_BY, HBasePropertyConstants.HBASE_TABLE_DEFAULT_CREATED));
                 tableDescDto.setLastUpdateTimestamp(Long.parseLong(tableProps.getOrDefault(HBasePropertyConstants.LAST_UPDATE_TIMESTAMP, "0")));
-                tableDescDto.setLastMajorCompactTimestamp(tableDesc.getLastMajorCompactTimestamp());
+                tableDescDto.setLastMajorCompactTimestamp(tableDesc.getLastMajorCompaction());
             }
 
             return tableDescDto;

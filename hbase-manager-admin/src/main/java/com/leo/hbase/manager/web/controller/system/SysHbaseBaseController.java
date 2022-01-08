@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.CCweixiao.hql.config.DefaultHBaseTableConfig;
 import com.github.CCweixiao.exception.HBaseOperationsException;
-import com.github.CCweixiao.model.TableDesc;
+import com.github.CCweixiao.model.HTableDesc;
 import com.github.CCweixiao.util.StrUtil;
 import com.github.CCwexiao.dsl.config.HBaseColumnSchema;
 import com.github.CCwexiao.dsl.config.HBaseTableConfig;
@@ -76,7 +76,7 @@ public class SysHbaseBaseController extends BaseController {
         return cluster;
     }
 
-    public List<TableDescDto> filterFamilyDescList(QueryHBaseTableForm queryHBaseTableForm, List<TableDesc> tableDescList) {
+    public List<TableDescDto> filterFamilyDescList(QueryHBaseTableForm queryHBaseTableForm, List<HTableDesc> tableDescList) {
         return tableDescList.stream().map(tableDesc -> {
             final TableDescDto tableDescDto = new TableDescDto().convertFor(tableDesc);
             final Integer[] tagIds = tableDescDto.getTagIds();

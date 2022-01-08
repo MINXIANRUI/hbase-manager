@@ -8,10 +8,10 @@ import com.github.CCweixiao.hbtop.RecordFilter;
 import com.github.CCweixiao.hbtop.Summary;
 import com.github.CCweixiao.hbtop.field.Field;
 import com.github.CCweixiao.hbtop.mode.Mode;
-import com.github.CCweixiao.model.FamilyDesc;
+import com.github.CCweixiao.model.ColumnFamilyDesc;
+import com.github.CCweixiao.model.HTableDesc;
 import com.github.CCweixiao.model.NamespaceDesc;
 import com.github.CCweixiao.model.SnapshotDesc;
-import com.github.CCweixiao.model.TableDesc;
 import com.github.CCweixiao.util.SplitGoEnum;
 import com.leo.hbase.manager.common.constant.HBasePropertyConstants;
 import com.leo.hbase.manager.common.exception.BusinessException;
@@ -28,7 +28,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -93,13 +95,13 @@ public class MultiHBaseAdminServiceImpl implements IMultiHBaseAdminService {
     @Override
     public boolean createNamespace(String clusterCode, NamespaceDesc namespace) {
         HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
-        return hBaseTemplate.createNamespace(namespace);
+        return hBaseTemplate.createNamespace(namespace, true);
     }
 
     @Override
     public boolean deleteNamespace(String clusterCode, String namespace) {
         HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
-        return hBaseTemplate.deleteNamespace(namespace);
+        return hBaseTemplate.deleteNamespace(namespace, true);
     }
 
     @Override
@@ -148,12 +150,12 @@ public class MultiHBaseAdminServiceImpl implements IMultiHBaseAdminService {
     }
 
     @Override
-    public List<TableDesc> listAllTableDesc(String clusterCode, boolean checkAuth) {
+    public List<HTableDesc> listAllHTableDesc(String clusterCode, boolean checkAuth) {
         final String filterNamespacePrefix = HBaseConfigUtils.getFilterNamespacePrefix(clusterCode);
         final String filterTableNamePrefix = HBaseConfigUtils.getFilterTableNamePrefix(clusterCode);
 
         HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
-        List<TableDesc> tableDescList = hBaseTemplate.listTableDesc();
+        List<HTableDesc> tableDescList = hBaseTemplate.listTableDesc();
 
         if (checkAuth) {
             Long userId = ShiroUtils.getUserId();
@@ -207,20 +209,20 @@ public class MultiHBaseAdminServiceImpl implements IMultiHBaseAdminService {
     }
 
     @Override
-    public boolean createTable(String clusterCode, TableDesc tableDesc) {
+    public boolean createTable(String clusterCode, HTableDesc tableDesc) {
         HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         return hBaseTemplate.createTable(tableDesc);
     }
 
     @Override
-    public boolean createTable(String clusterCode, TableDesc tableDesc, String startKey, String endKey, int numRegions, boolean isAsync) {
+    public boolean createTable(String clusterCode, HTableDesc tableDesc, String startKey, String endKey, int numRegions, boolean isAsync) {
         HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         return hBaseTemplate.createTable(tableDesc, startKey, endKey, numRegions, isAsync);
 
     }
 
     @Override
-    public boolean createTable(String clusterCode, TableDesc tableDesc, String[] splitKeys, boolean isAsync) {
+    public boolean createTable(String clusterCode, HTableDesc tableDesc, String[] splitKeys, boolean isAsync) {
         HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         return hBaseTemplate.createTable(tableDesc, splitKeys, isAsync);
     }
@@ -228,7 +230,7 @@ public class MultiHBaseAdminServiceImpl implements IMultiHBaseAdminService {
     @Override
     public boolean createSnapshot(String clusterCode, SnapshotDesc snapshotDesc) {
         HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
-        return hBaseTemplate.snapshot(snapshotDesc);
+        return hBaseTemplate.snapshot(snapshotDesc, true);
     }
 
     @Override
@@ -238,7 +240,7 @@ public class MultiHBaseAdminServiceImpl implements IMultiHBaseAdminService {
     }
 
     @Override
-    public boolean createTable(String clusterCode, TableDesc tableDesc, SplitGoEnum splitGoEnum, int numRegions, boolean isAsync) {
+    public boolean createTable(String clusterCode, HTableDesc tableDesc, SplitGoEnum splitGoEnum, int numRegions, boolean isAsync) {
         HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         return hBaseTemplate.createTable(tableDesc, splitGoEnum, numRegions, isAsync);
     }
@@ -270,63 +272,64 @@ public class MultiHBaseAdminServiceImpl implements IMultiHBaseAdminService {
     @Override
     public boolean deleteTable(String clusterCode, String tableName) {
         HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
-        return hBaseTemplate.deleteTable(tableName);
+        return hBaseTemplate.deleteTable(tableName, true);
     }
 
     @Override
     public boolean truncatePreserve(String clusterCode, String tableName) {
         HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
-        return hBaseTemplate.truncateTable(tableName, true);
+        return hBaseTemplate.truncateTable(tableName, true, true);
     }
 
     @Override
-    public TableDesc getTableDesc(String clusterCode, String tableName) {
+    public HTableDesc getHTableDesc(String clusterCode, String tableName) {
         HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         return hBaseTemplate.getTableDesc(tableName);
     }
 
     @Override
-    public List<FamilyDesc> getFamilyDesc(String clusterCode, String tableName) {
+    public List<ColumnFamilyDesc> getColumnFamilyDesc(String clusterCode, String tableName) {
         HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
         return hBaseTemplate.listFamilyDesc(tableName);
     }
 
     @Override
-    public boolean addFamily(String clusterCode, String tableName, FamilyDesc familyDesc) {
+    public boolean addFamily(String clusterCode, String tableName, ColumnFamilyDesc familyDesc) {
         HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
-        return hBaseTemplate.addFamily(tableName, familyDesc);
+        return hBaseTemplate.addFamily(tableName, familyDesc, true);
     }
 
     @Override
     public boolean deleteFamily(String clusterCode, String tableName, String familyName) {
         HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
-        return hBaseTemplate.deleteFamily(tableName, familyName);
+        return hBaseTemplate.deleteFamily(tableName, familyName, true);
     }
 
     @Override
-    public boolean modifyFamily(String clusterCode, String tableName, FamilyDesc familyDesc) {
+    public boolean modifyFamily(String clusterCode, String tableName, ColumnFamilyDesc familyDesc) {
         HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
-        return hBaseTemplate.modifyFamily(tableName, familyDesc);
+        return hBaseTemplate.modifyFamily(tableName, familyDesc, true);
     }
 
     @Override
     public boolean enableReplication(String clusterCode, String tableName, List<String> families) {
         HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
-        return hBaseTemplate.enableReplicationScope(tableName, families);
+        return hBaseTemplate.enableReplicationScope(tableName, families, true);
     }
 
     @Override
     public boolean disableReplication(String clusterCode, String tableName, List<String> families) {
         HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
-        return hBaseTemplate.disableReplicationScope(tableName, families);
+        return hBaseTemplate.disableReplicationScope(tableName, families, true);
     }
 
     @Override
-    public boolean modifyTable(String clusterCode, TableDesc tableDesc) {
+    public boolean modifyTable(String clusterCode, HTableDesc tableDesc) {
         HBaseAdminTemplate hBaseTemplate = hBaseClusterDSConfig.getHBaseAdminTemplate(clusterCode);
-        tableDesc.addProp(HBasePropertyConstants.LAST_UPDATE_BY, ShiroUtils.getLoginName());
-        tableDesc.addProp(HBasePropertyConstants.LAST_UPDATE_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
-        return hBaseTemplate.modifyTableProps(tableDesc);
+        Map<String, String> props = new HashMap<>(2);
+        props.put(HBasePropertyConstants.LAST_UPDATE_BY, ShiroUtils.getLoginName());
+        props.put(HBasePropertyConstants.LAST_UPDATE_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
+        return hBaseTemplate.modifyTableProps(tableDesc.getFullTableName(), props, true);
     }
 
     @Override

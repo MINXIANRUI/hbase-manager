@@ -1,12 +1,11 @@
 package com.leo.hbase.manager.web.controller.system;
 
 import com.github.CCweixiao.constant.HMHBaseConstant;
+import com.github.CCweixiao.model.HTableDesc;
 import com.github.CCweixiao.model.NamespaceDesc;
-import com.github.CCweixiao.model.TableDesc;
 import com.github.CCweixiao.util.SplitGoEnum;
 import com.github.CCweixiao.util.StrUtil;
 import com.leo.hbase.manager.common.annotation.Log;
-import com.leo.hbase.manager.common.constant.Constants;
 import com.leo.hbase.manager.common.constant.HBaseManagerConstants;
 import com.leo.hbase.manager.common.core.domain.AjaxResult;
 import com.leo.hbase.manager.common.core.page.TableDataInfo;
@@ -71,7 +70,7 @@ public class SysHbaseTableController extends SysHbaseBaseController {
     @GetMapping("/detail/{tableId}")
     public String detail(@PathVariable("tableId") String tableId, ModelMap mmap) {
         final String tableName = parseTableNameFromTableId(tableId);
-        final TableDesc tableDesc = multiHBaseAdminService.getTableDesc(clusterCodeOfCurrentSession(), tableName);
+        final HTableDesc tableDesc = multiHBaseAdminService.getHTableDesc(clusterCodeOfCurrentSession(), tableName);
         TableDescDto tableDescDto = new TableDescDto().convertFor(tableDesc);
         tableDescDto.setSysHbaseTagList(getSysHbaseTagByLongIds(tableDescDto.getTagIds()));
 
@@ -85,7 +84,7 @@ public class SysHbaseTableController extends SysHbaseBaseController {
         final String tableName = StrEnDeUtils.decrypt(tableId);
 
         String clusterCode = clusterCodeOfCurrentSession();
-        TableDesc tableDesc = multiHBaseAdminService.getTableDesc(clusterCode, tableName);
+        HTableDesc tableDesc = multiHBaseAdminService.getHTableDesc(clusterCode, tableName);
         TableDescDto tableDescDto = new TableDescDto().convertFor(tableDesc);
         mmap.put("tableObj", tableDescDto);
 
@@ -113,7 +112,7 @@ public class SysHbaseTableController extends SysHbaseBaseController {
     @PostMapping("/list")
     @ResponseBody
     public TableDataInfo list(QueryHBaseTableForm queryHBaseTableForm) {
-        final List<TableDesc> tableDescList = multiHBaseAdminService.listAllTableDesc(clusterCodeOfCurrentSession(), true);
+        final List<HTableDesc> tableDescList = multiHBaseAdminService.listAllHTableDesc(clusterCodeOfCurrentSession(), true);
         final List<TableDescDto> tableDescDtoList = filterFamilyDescList(queryHBaseTableForm, tableDescList);
         return getDataTable(tableDescDtoList);
     }
@@ -126,7 +125,7 @@ public class SysHbaseTableController extends SysHbaseBaseController {
     @PostMapping("/export")
     @ResponseBody
     public AjaxResult export(QueryHBaseTableForm queryHBaseTableForm) {
-        final List<TableDesc> tableDescList = multiHBaseAdminService.listAllTableDesc(clusterCodeOfCurrentSession(), true);
+        final List<HTableDesc> tableDescList = multiHBaseAdminService.listAllHTableDesc(clusterCodeOfCurrentSession(), true);
         final List<TableDescDto> tableDescDtoList = filterFamilyDescList(queryHBaseTableForm, tableDescList);
         ExcelUtil<TableDescDto> util = new ExcelUtil<>(TableDescDto.class);
         return util.exportExcel(tableDescDtoList, "table");
@@ -166,7 +165,7 @@ public class SysHbaseTableController extends SysHbaseBaseController {
         tableDescDto.setLastUpdateBy(ShiroUtils.getLoginName());
         tableDescDto.setLastUpdateTimestamp(System.currentTimeMillis());
 
-        TableDesc tableDesc = tableDescDto.convertTo();
+        HTableDesc tableDesc = tableDescDto.convertTo();
         boolean createTableRes = false;
         if (StrUtil.isBlank(tableDescDto.getSplitWay())) {
             createTableRes = multiHBaseAdminService.createTable(clusterCode, tableDesc);
@@ -235,7 +234,7 @@ public class SysHbaseTableController extends SysHbaseBaseController {
         String clusterCode = clusterCodeOfCurrentSession();
         final List<NamespaceDesc> namespaceDescList = multiHBaseAdminService.listAllNamespaceDesc(clusterCode);
         mmap.put("namespaces", namespaceDescList);
-        TableDesc tableDesc = multiHBaseAdminService.getTableDesc(clusterCode, tableName);
+        HTableDesc tableDesc = multiHBaseAdminService.getHTableDesc(clusterCode, tableName);
         TableDescDto tableDescDto = new TableDescDto().convertFor(tableDesc);
         mmap.put("tableDescDto", tableDescDto);
         mmap.put("tags", selectHBaseTagsByTable(tableDescDto));
@@ -260,12 +259,12 @@ public class SysHbaseTableController extends SysHbaseBaseController {
         tableDescDto.setLastUpdateBy(ShiroUtils.getLoginName());
         tableDescDto.setLastUpdateTimestamp(System.currentTimeMillis());
 
-        TableDesc tableDesc = tableDescDto.convertTo();
-        if (tableDesc.isDisabled()) {
+        HTableDesc tableDesc = tableDescDto.convertTo();
+     /*   if (tableDesc.getState()) {
             multiHBaseAdminService.disableTable(clusterCode, tableName);
         } else {
             multiHBaseAdminService.enableTable(clusterCode, tableName);
-        }
+        }*/
         multiHBaseAdminService.modifyTable(clusterCode, tableDesc);
         return success();
     }

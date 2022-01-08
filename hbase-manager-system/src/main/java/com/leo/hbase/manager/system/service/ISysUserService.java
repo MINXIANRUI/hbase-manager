@@ -2,7 +2,7 @@ package com.leo.hbase.manager.system.service;
 
 import java.util.List;
 
-import com.github.CCweixiao.model.TableDesc;
+import com.github.CCweixiao.model.HTableDesc;
 import com.leo.hbase.manager.common.core.domain.StrZtree;
 import com.leo.hbase.manager.system.domain.SysUser;
 import com.leo.hbase.manager.system.domain.SysUserRole;
@@ -215,5 +215,5 @@ public interface ISysUserService {
      * @param clusterAlias 当前操作的集群
      * @return 用户表树状数据
      */
-    public List<StrZtree> userTableTreeData(List<TableDesc> tableDescList, Long userId, String clusterAlias);
+    public List<StrZtree> userTableTreeData(List<HTableDesc> tableDescList, Long userId, String clusterAlias);
 }

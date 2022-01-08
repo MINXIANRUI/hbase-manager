@@ -1,17 +1,14 @@
 package com.leo.hbase.manager.system.service.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.github.CCweixiao.model.TableDesc;
+import com.github.CCweixiao.model.HTableDesc;
 import com.google.common.collect.Lists;
 import com.leo.hbase.manager.common.core.domain.StrZtree;
-import com.leo.hbase.manager.common.core.domain.Ztree;
 import com.leo.hbase.manager.system.domain.*;
-import com.leo.hbase.manager.system.dto.TableDescDto;
 import com.leo.hbase.manager.system.mapper.*;
 import com.leo.hbase.manager.system.service.ISysConfigService;
 import com.leo.hbase.manager.system.service.ISysUserService;
@@ -469,7 +466,7 @@ public class SysUserServiceImpl implements ISysUserService {
     }
 
     @Override
-    public List<StrZtree> userTableTreeData(List<TableDesc> tableDescList, Long userId, String clusterAlias) {
+    public List<StrZtree> userTableTreeData(List<HTableDesc> tableDescList, Long userId, String clusterAlias) {
         List<String> checkedTables;
         final List<SysUserHbaseTable> sysUserHbaseTables = userHbaseTableMapper.selectSysUserHbaseTableListByUserAndClusterAlias(userId, clusterAlias);
         if(sysUserHbaseTables==null||sysUserHbaseTables.isEmpty()){
@@ -487,8 +484,8 @@ public class SysUserServiceImpl implements ISysUserService {
      * @param checkedTables 用户已拥有的表列表
      * @return 树结构列表
      */
-    public List<StrZtree> initStrZtree(List<TableDesc> tableDescList, List<String> checkedTables) {
-        final Map<String, List<String>> namespaceTables = tableDescList.stream().collect(Collectors.toMap(TableDesc::getNamespaceName,
+    public List<StrZtree> initStrZtree(List<HTableDesc> tableDescList, List<String> checkedTables) {
+        final Map<String, List<String>> namespaceTables = tableDescList.stream().collect(Collectors.toMap(HTableDesc::getNamespaceName,
                 tableDesc -> Lists.newArrayList(tableDesc.getFullTableName()),
                 (List<String> newValueList, List<String> oldValueList) -> {
                     oldValueList.addAll(newValueList);

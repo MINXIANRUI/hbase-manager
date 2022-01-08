@@ -1,6 +1,6 @@
 package com.leo.hbase.manager.web.controller.system;
 
-import com.github.CCweixiao.model.FamilyDesc;
+import com.github.CCweixiao.model.ColumnFamilyDesc;
 import com.leo.hbase.manager.common.annotation.Log;
 import com.leo.hbase.manager.common.core.domain.AjaxResult;
 import com.leo.hbase.manager.common.core.page.TableDataInfo;
@@ -47,7 +47,7 @@ public class SysHbaseFamilyController extends SysHbaseBaseController {
     @ResponseBody
     public TableDataInfo list(QueryHBaseTableForm queryHBaseTableForm) {
         final String tableName = parseTableNameFromTableId(queryHBaseTableForm.getTableId());
-        final List<FamilyDesc> familyDescList = multiHBaseAdminService.getFamilyDesc(clusterCodeOfCurrentSession(), tableName);
+        final List<ColumnFamilyDesc> familyDescList = multiHBaseAdminService.getColumnFamilyDesc(clusterCodeOfCurrentSession(), tableName);
         List<FamilyDescDto> familyDescDtoList = filterFamilyList(tableName, familyDescList);
         return getDataTable(familyDescDtoList);
     }
@@ -61,7 +61,7 @@ public class SysHbaseFamilyController extends SysHbaseBaseController {
     @ResponseBody
     public AjaxResult export(QueryHBaseTableForm queryHBaseTableForm) {
         final String tableName = parseTableNameFromTableId(queryHBaseTableForm.getTableId());
-        final List<FamilyDesc> familyDescList = multiHBaseAdminService.getFamilyDesc(clusterCodeOfCurrentSession(), tableName);
+        final List<ColumnFamilyDesc> familyDescList = multiHBaseAdminService.getColumnFamilyDesc(clusterCodeOfCurrentSession(), tableName);
         List<FamilyDescDto> familyDescDtoList = filterFamilyList(tableName, familyDescList);
         ExcelUtil<FamilyDescDto> util = new ExcelUtil<>(FamilyDescDto.class);
         return util.exportExcel(familyDescDtoList, "family");
@@ -87,7 +87,7 @@ public class SysHbaseFamilyController extends SysHbaseBaseController {
     @PostMapping("/add")
     @ResponseBody
     public AjaxResult addSave(FamilyDescDto familyDescDto) {
-        FamilyDesc familyDesc = familyDescDto.convertTo();
+        ColumnFamilyDesc familyDesc = familyDescDto.convertTo();
         boolean res = multiHBaseAdminService.addFamily(clusterCodeOfCurrentSession(), familyDescDto.getTableName(), familyDesc);
         if (res) {
             return success("列簇[" + familyDesc.getFamilyName() + "]添加成功");
@@ -103,7 +103,7 @@ public class SysHbaseFamilyController extends SysHbaseBaseController {
         String tableName = familyId.substring(0, familyId.lastIndexOf(":"));
         String familyName = familyId.substring(familyId.lastIndexOf(":") + 1);
 
-        final List<FamilyDesc> familyDescList = multiHBaseAdminService.getFamilyDesc(clusterCodeOfCurrentSession(), tableName);
+        final List<ColumnFamilyDesc> familyDescList = multiHBaseAdminService.getColumnFamilyDesc(clusterCodeOfCurrentSession(), tableName);
         final List<FamilyDescDto> familyDescDtoList = familyDescList.stream()
                 .filter(familyDesc -> familyDesc.getFamilyName().equals(familyName))
                 .map(familyDesc -> new FamilyDescDto().convertFor(familyDesc))
@@ -123,7 +123,7 @@ public class SysHbaseFamilyController extends SysHbaseBaseController {
     @PostMapping("/edit")
     @ResponseBody
     public AjaxResult editSave(FamilyDescDto familyDescDto) {
-        final FamilyDesc familyDesc = familyDescDto.convertTo();
+        final ColumnFamilyDesc familyDesc = familyDescDto.convertTo();
         boolean res = multiHBaseAdminService.modifyFamily(clusterCodeOfCurrentSession(), familyDescDto.getTableName(), familyDesc);
         if (res) {
             return success("列簇[" + familyDesc.getFamilyName() + "]更新成功");
@@ -151,7 +151,7 @@ public class SysHbaseFamilyController extends SysHbaseBaseController {
         return success("列簇[" + familyName + "]删除失败");
     }
 
-    private List<FamilyDescDto> filterFamilyList(String tableName, List<FamilyDesc> familyDescList) {
+    private List<FamilyDescDto> filterFamilyList(String tableName, List<ColumnFamilyDesc> familyDescList) {
         return familyDescList.stream().map(familyDesc -> {
             FamilyDescDto familyDescDto = new FamilyDescDto().convertFor(familyDesc);
             familyDescDto.setTableName(tableName);

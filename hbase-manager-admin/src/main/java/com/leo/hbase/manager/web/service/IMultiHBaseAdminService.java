@@ -5,12 +5,11 @@ import com.github.CCweixiao.hbtop.RecordFilter;
 import com.github.CCweixiao.hbtop.Summary;
 import com.github.CCweixiao.hbtop.field.Field;
 import com.github.CCweixiao.hbtop.mode.Mode;
-import com.github.CCweixiao.model.FamilyDesc;
+import com.github.CCweixiao.model.HTableDesc;
+import com.github.CCweixiao.model.ColumnFamilyDesc;
 import com.github.CCweixiao.model.NamespaceDesc;
 import com.github.CCweixiao.model.SnapshotDesc;
-import com.github.CCweixiao.model.TableDesc;
 import com.github.CCweixiao.util.SplitGoEnum;
-import com.leo.hbase.manager.common.core.domain.Ztree;
 
 import java.util.List;
 
@@ -88,7 +87,7 @@ public interface IMultiHBaseAdminService {
      * @param checkAuth   是否检查授权
      * @return 所有表信息
      */
-    List<TableDesc> listAllTableDesc(String clusterCode, boolean checkAuth);
+    List<HTableDesc> listAllHTableDesc(String clusterCode, boolean checkAuth);
 
     /**
      * 获取所有快照
@@ -106,7 +105,7 @@ public interface IMultiHBaseAdminService {
      * @param tableDesc   表描述信息
      * @return 创建表是否成功
      */
-    boolean createTable(String clusterCode, TableDesc tableDesc);
+    boolean createTable(String clusterCode, HTableDesc tableDesc);
 
 
     /**
@@ -120,7 +119,7 @@ public interface IMultiHBaseAdminService {
      * @param isAsync     是否是异步的方式
      * @return 表是否被创建成功
      */
-    boolean createTable(String clusterCode, TableDesc tableDesc, String startKey, String endKey, int numRegions, boolean isAsync);
+    boolean createTable(String clusterCode, HTableDesc tableDesc, String startKey, String endKey, int numRegions, boolean isAsync);
 
     /**
      * 创建表，预分区
@@ -131,7 +130,7 @@ public interface IMultiHBaseAdminService {
      * @param isAsync     是否是异步的方式
      * @return 表是否被创建成功
      */
-    boolean createTable(String clusterCode, TableDesc tableDesc, String[] splitKeys, boolean isAsync);
+    boolean createTable(String clusterCode, HTableDesc tableDesc, String[] splitKeys, boolean isAsync);
 
     /**
      * 创建HBase表快照
@@ -161,7 +160,7 @@ public interface IMultiHBaseAdminService {
      * @param isAsync     是否是异步的方式
      * @return 表是否被创建成功
      */
-    boolean createTable(String clusterCode, final TableDesc tableDesc, SplitGoEnum splitGoEnum, int numRegions, boolean isAsync);
+    boolean createTable(String clusterCode, final HTableDesc tableDesc, SplitGoEnum splitGoEnum, int numRegions, boolean isAsync);
 
     /**
      * 启用表
@@ -224,7 +223,7 @@ public interface IMultiHBaseAdminService {
      * @param tableName   table name.
      * @return table descriptor
      */
-    TableDesc getTableDesc(String clusterCode, String tableName);
+    HTableDesc getHTableDesc(String clusterCode, String tableName);
 
     /**
      * 获取某张表的所有列簇
@@ -233,7 +232,7 @@ public interface IMultiHBaseAdminService {
      * @param tableName   表名
      * @return 列簇
      */
-    List<FamilyDesc> getFamilyDesc(String clusterCode, String tableName);
+    List<ColumnFamilyDesc> getColumnFamilyDesc(String clusterCode, String tableName);
 
     /**
      * 添加列簇
@@ -243,7 +242,7 @@ public interface IMultiHBaseAdminService {
      * @param familyDesc  列簇信息
      * @return 列簇是否添加成功
      */
-    boolean addFamily(String clusterCode, String tableName, FamilyDesc familyDesc);
+    boolean addFamily(String clusterCode, String tableName, ColumnFamilyDesc familyDesc);
 
     /**
      * 列簇删除
@@ -263,7 +262,7 @@ public interface IMultiHBaseAdminService {
      * @param familyDesc  列簇信息
      * @return 列簇是否修改成功
      */
-    boolean modifyFamily(String clusterCode, String tableName, FamilyDesc familyDesc);
+    boolean modifyFamily(String clusterCode, String tableName, ColumnFamilyDesc familyDesc);
 
     /**
      * 启用replication
@@ -292,7 +291,7 @@ public interface IMultiHBaseAdminService {
      * @param tableDesc   表描述
      * @return 结果
      */
-    boolean modifyTable(String clusterCode, TableDesc tableDesc);
+    boolean modifyTable(String clusterCode, HTableDesc tableDesc);
 
     /**
      * 获取region server的数量

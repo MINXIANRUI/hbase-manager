@@ -1,7 +1,7 @@
 package com.leo.hbase.manager.web.controller.system;
 
 import com.github.CCweixiao.exception.HBaseOperationsException;
-import com.github.CCweixiao.model.TableDesc;
+import com.github.CCweixiao.model.HTableDesc;
 import com.leo.hbase.manager.common.annotation.Log;
 import com.leo.hbase.manager.common.constant.UserConstants;
 import com.leo.hbase.manager.common.core.domain.AjaxResult;
@@ -285,7 +285,7 @@ public class SysUserController extends SysHbaseBaseController {
     @GetMapping("/userTableTreeData")
     @ResponseBody
     public List<StrZtree> roleMenuTreeData(Long userId) {
-        List<TableDesc> tableDescList = hBaseAdminService.listAllTableDesc(clusterCodeOfCurrentSession(), false);
+        List<HTableDesc> tableDescList = hBaseAdminService.listAllHTableDesc(clusterCodeOfCurrentSession(), false);
         return userService.userTableTreeData(tableDescList, userId, clusterCodeOfCurrentSession());
     }
 

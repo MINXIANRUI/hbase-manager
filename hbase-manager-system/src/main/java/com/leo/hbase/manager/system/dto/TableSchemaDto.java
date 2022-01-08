@@ -3,7 +3,7 @@ package com.leo.hbase.manager.system.dto;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.CCweixiao.exception.HBaseOperationsException;
-import com.github.CCweixiao.model.TableDesc;
+import com.github.CCweixiao.model.HTableDesc;
 import com.google.common.base.Converter;
 import com.leo.hbase.manager.common.utils.JSONUtil;
 import com.leo.hbase.manager.common.utils.security.StrEnDeUtils;
@@ -13,7 +13,6 @@ import com.leo.hbase.manager.system.valid.Second;
 import javax.validation.GroupSequence;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -28,20 +27,20 @@ public class TableSchemaDto {
     @Size(min = 1, max = 200000, message = "HBaseTableSchema必须在200000个字符之间", groups = {Second.class})
     private String tableSchema;
 
-    public TableDesc convertTo() {
+    public HTableDesc convertTo() {
         TableSchemaDtoConvert convert = new TableSchemaDtoConvert();
         return convert.convert(this);
     }
 
-    public TableSchemaDto convertFor(TableDesc tableDesc) {
+    public TableSchemaDto convertFor(HTableDesc tableDesc) {
         TableSchemaDtoConvert convert = new TableSchemaDtoConvert();
         return convert.reverse().convert(tableDesc);
     }
 
-    public static class TableSchemaDtoConvert extends Converter<TableSchemaDto, TableDesc> {
+    public static class TableSchemaDtoConvert extends Converter<TableSchemaDto, HTableDesc> {
 
         @Override
-        protected TableDesc doForward(TableSchemaDto tableSchemaDto) {
+        protected HTableDesc doForward(TableSchemaDto tableSchemaDto) {
             String schemaJsonStr = tableSchemaDto.getTableSchema();
             final JSONObject schemaJson = JSON.parseObject(schemaJsonStr);
             if (schemaJson == null) {
@@ -49,17 +48,14 @@ public class TableSchemaDto {
             }
             String tableName = JSONUtil.getStrV(schemaJson, "tableName");
 
-            TableDesc tableDesc = new TableDesc();
-            tableDesc.setTableName(tableName);
-            Map<String, String> columnSchemaPro = new HashMap<>(1);
-            columnSchemaPro.put("tableSchema", schemaJsonStr);
-            tableDesc.setTableProps(columnSchemaPro);
+            HTableDesc.Builder tableDescBuilder = new HTableDesc.Builder().defaultTableDesc(tableName);
+            tableDescBuilder.addTableProp("tableSchema", schemaJsonStr);
 
-            return tableDesc;
+            return tableDescBuilder.build();
         }
 
         @Override
-        protected TableSchemaDto doBackward(TableDesc tableDesc) {
+        protected TableSchemaDto doBackward(HTableDesc tableDesc) {
             final Map<String, String> tableProps = tableDesc.getTableProps();
              String tableSchema;
             if(tableProps==null|| tableProps.isEmpty()){

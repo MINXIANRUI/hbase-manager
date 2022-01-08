@@ -2,7 +2,7 @@ package com.leo.hbase.manager.web.controller.system;
 
 import com.github.CCweixiao.exception.HBaseOperationsException;
 import com.github.CCweixiao.model.HQLType;
-import com.github.CCweixiao.model.TableDesc;
+import com.github.CCweixiao.model.HTableDesc;
 import com.github.CCwexiao.dsl.client.HBaseCellResult;
 import com.github.CCwexiao.dsl.config.HBaseTableConfig;
 import com.github.CCwexiao.dsl.util.TreeUtil;
@@ -65,7 +65,7 @@ public class SysHbaseTableSqlController extends SysHbaseBaseController {
             throw new HBaseOperationsException("HBase表[" + tableName + "]不存在");
         }
         HQLType hqlType = TreeUtil.parseHQLType(hql);
-        final TableDesc tableDesc = multiHBaseAdminService.getTableDesc(clusterCode, tableName);
+        final HTableDesc tableDesc = multiHBaseAdminService.getHTableDesc(clusterCode, tableName);
         TableSchemaDto tableSchemaDto = new TableSchemaDto().convertFor(tableDesc);
 
         HBaseTableConfig tableConfig = parseHBaseConfigFromTableSchema(tableSchemaDto.getTableSchema());

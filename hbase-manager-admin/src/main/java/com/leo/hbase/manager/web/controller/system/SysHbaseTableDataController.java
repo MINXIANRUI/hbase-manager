@@ -3,8 +3,9 @@ package com.leo.hbase.manager.web.controller.system;
 import com.alibaba.fastjson.JSON;
 import com.github.CCweixiao.constant.HMHBaseConstant;
 import com.github.CCweixiao.exception.HBaseOperationsException;
-import com.github.CCweixiao.model.FamilyDesc;
-import com.github.CCweixiao.model.TableDesc;
+
+import com.github.CCweixiao.model.ColumnFamilyDesc;
+import com.github.CCweixiao.model.HTableDesc;
 import com.github.CCweixiao.util.StrUtil;
 import com.leo.hbase.manager.common.annotation.Log;
 import com.leo.hbase.manager.common.core.domain.AjaxResult;
@@ -223,13 +224,13 @@ public class SysHbaseTableDataController extends SysHbaseBaseController {
             if (multiHBaseAdminService.isTableDisabled(clusterCode, tableName)) {
                 continue;
             }
-            TableDesc tableDesc = multiHBaseAdminService.getTableDesc(clusterCode, tableName);
+            HTableDesc tableDesc = multiHBaseAdminService.getHTableDesc(clusterCode, tableName);
 
             CxSelect cxSelectTable = new CxSelect();
             cxSelectTable.setN(tableName);
             cxSelectTable.setV(tableName);
 
-            List<String> families = tableDesc.getFamilyDescList().stream().map(FamilyDesc::getFamilyName).collect(Collectors.toList());
+            List<String> families = tableDesc.getColumnFamilyDescList().stream().map(ColumnFamilyDesc::getFamilyName).collect(Collectors.toList());
             List<CxSelect> tempFamilyList = new ArrayList<>();
             for (String family : families) {
                 CxSelect cxSelectFamily = new CxSelect();

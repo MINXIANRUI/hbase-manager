@@ -1,11 +1,13 @@
 package com.leo.hbase.manager.system.dto;
 
 import com.github.CCweixiao.constant.HMHBaseConstant;
-import com.github.CCweixiao.model.FamilyDesc;
+import com.github.CCweixiao.model.ColumnFamilyDesc;
 import com.google.common.base.Converter;
 import com.leo.hbase.manager.common.annotation.Excel;
 import com.leo.hbase.manager.common.utils.StringUtils;
 import com.leo.hbase.manager.system.valid.*;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.validation.GroupSequence;
 import javax.validation.constraints.Max;
@@ -26,8 +28,8 @@ public class FamilyDescDto {
     @Excel(name = "family名称")
     private String familyName;
 
-    @Excel(name = "最大版本号")
-    private Integer maxVersions;
+    @Excel(name = "最小版本号")
+    private Integer minVersions;
 
     @Excel(name = "ttl")
     private Integer timeToLive;
@@ -38,14 +40,14 @@ public class FamilyDescDto {
     @Excel(name = "replication标志")
     private Integer replicationScope;
 
-    public FamilyDesc convertTo() {
-        FamilyDescDto.FamilyDescDtoConvert convert = new FamilyDescDto.FamilyDescDtoConvert();
+    public ColumnFamilyDesc convertTo() {
+        FamilyDescDto.ColumnFamilyDescDtoConvert convert = new FamilyDescDto.ColumnFamilyDescDtoConvert();
         return convert.convert(this);
     }
 
-    public FamilyDescDto convertFor(FamilyDesc familyDesc) {
-        FamilyDescDto.FamilyDescDtoConvert convert = new FamilyDescDto.FamilyDescDtoConvert();
-        return convert.reverse().convert(familyDesc);
+    public FamilyDescDto convertFor(ColumnFamilyDesc columnFamilyDesc) {
+        FamilyDescDto.ColumnFamilyDescDtoConvert convert = new FamilyDescDto.ColumnFamilyDescDtoConvert();
+        return convert.reverse().convert(columnFamilyDesc);
     }
 
     public String getTableName() {
@@ -73,17 +75,17 @@ public class FamilyDescDto {
         this.familyName = familyName;
     }
 
-    @Min(value = 1, message = "最大版本数不能小于1", groups = {Second.class})
-    @Max(value = 999999, message = "最大版本数不能大于999999", groups = {Third.class})
-    public Integer getMaxVersions() {
-        if (maxVersions == null) {
-            maxVersions = HMHBaseConstant.DEFAULT_MAX_VERSIONS;
+    @Min(value = 1, message = "最小版本数不能小于1", groups = {Second.class})
+    @Max(value = 999999, message = "最小版本数不能大于999999", groups = {Third.class})
+    public Integer getMinVersions() {
+        if (minVersions == null) {
+            minVersions = HMHBaseConstant.DEFAULT_MAX_VERSIONS;
         }
-        return maxVersions;
+        return minVersions;
     }
 
-    public void setMaxVersions(Integer maxVersions) {
-        this.maxVersions = maxVersions;
+    public void setMinVersions(Integer minVersions) {
+        this.minVersions = minVersions;
     }
 
     @Min(value = 1, message = "TTL不能小于1", groups = {Fourth.class})
@@ -121,42 +123,42 @@ public class FamilyDescDto {
         this.replicationScope = replicationScope;
     }
 
-    public static class FamilyDescDtoConvert extends Converter<FamilyDescDto, FamilyDesc> {
+    public static class ColumnFamilyDescDtoConvert extends Converter<FamilyDescDto, ColumnFamilyDesc> {
 
         @Override
-        protected FamilyDesc doForward(FamilyDescDto familyDescDto) {
-            return new FamilyDesc.Builder()
-                    .familyName(familyDescDto.getFamilyName())
-                    .maxVersions(familyDescDto.getMaxVersions())
-                    .timeToLive(familyDescDto.getTimeToLive())
-                    .compressionType(familyDescDto.getCompressionType())
-                    .replicationScope(familyDescDto.getReplicationScope())
+        protected ColumnFamilyDesc doForward(FamilyDescDto columnFamilyDescDto) {
+            return new ColumnFamilyDesc.Builder()
+                    .familyName(columnFamilyDescDto.getFamilyName())
+                    .minVersions(columnFamilyDescDto.getMinVersions())
+                    .timeToLive(columnFamilyDescDto.getTimeToLive())
+                    .compressionType(columnFamilyDescDto.getCompressionType())
+                    .replicationScope(columnFamilyDescDto.getReplicationScope())
                     .build();
         }
 
         @Override
-        protected FamilyDescDto doBackward(FamilyDesc familyDesc) {
-            FamilyDescDto familyDescDto = new FamilyDescDto();
-            familyDescDto.setFamilyId(familyDesc.getFamilyName());
-            familyDescDto.setFamilyName(familyDesc.getFamilyName());
-            familyDescDto.setMaxVersions(familyDesc.getMaxVersions());
-            familyDescDto.setCompressionType(familyDesc.getCompressionType());
-            familyDescDto.setReplicationScope(familyDesc.getReplicationScope());
-            familyDescDto.setTimeToLive(familyDesc.getTimeToLive());
-            return familyDescDto;
+        protected FamilyDescDto doBackward(ColumnFamilyDesc columnFamilyDesc) {
+            FamilyDescDto columnFamilyDescDto = new FamilyDescDto();
+            columnFamilyDescDto.setFamilyId(columnFamilyDesc.getFamilyName());
+            columnFamilyDescDto.setFamilyName(columnFamilyDesc.getFamilyName());
+            columnFamilyDescDto.setMinVersions(columnFamilyDesc.getMinVersions());
+            columnFamilyDescDto.setCompressionType(columnFamilyDesc.getCompressionType());
+            columnFamilyDescDto.setReplicationScope(columnFamilyDesc.getReplicationScope());
+            columnFamilyDescDto.setTimeToLive(columnFamilyDesc.getTimeToLive());
+            return columnFamilyDescDto;
         }
     }
 
     @Override
     public String toString() {
-        return "FamilyDescDto{" +
-                "tableName='" + tableName + '\'' +
-                "familyId='" + familyId + '\'' +
-                ", familyName='" + familyName + '\'' +
-                ", maxVersions=" + maxVersions +
-                ", timeToLive=" + timeToLive +
-                ", compressionType='" + compressionType + '\'' +
-                ", replicationScope=" + replicationScope +
-                '}';
+        return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+                .append("tableName", getTableName())
+                .append("familyId", getFamilyId())
+                .append("familyName", getFamilyName())
+                .append("minVersions", getMinVersions())
+                .append("timeToLive", getTimeToLive())
+                .append("compressionType", getCompressionType())
+                .append("replicationScope", getReplicationScope())
+                .toString();
     }
 }
