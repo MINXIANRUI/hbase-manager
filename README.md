@@ -429,6 +429,10 @@ delete * from TEST:USER where rowkey is stringkey ( '1001' ) ( age greater '10' 
 
 ## 9. 更新日志
 
+### v2.0.9 2022.01.09
+
+1. 完善类的不兼容问题
+
 ### v2.0.8 2021.02.06
 
 1. hbase-client依赖替换为hbase-shade-client
